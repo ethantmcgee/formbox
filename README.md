@@ -19,11 +19,13 @@ spam protection.
 
 ## Features
 
-
-
-## Repository Contents
-
-
+- Projects
+  - Host unlimited projects (one per form)
+  - Add as many contributors per project as desired
+  - Configurable automatic rotation of form submissions
+- Notifications
+  - Add as many notifiers per project as desired
+  - Get notified of submissions immediately, on a digest or not at all
 
 ## Contributions
 
