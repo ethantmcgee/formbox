@@ -50,6 +50,7 @@ def save_user_auth_setting(sender, instance, **kwargs):
 
 class TwoFactorOption(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=255)
     two_factor_type = models.CharField(max_length=6, choices=TWO_FACTOR_TYPE)
     target = models.CharField(max_length=255, null=True)
     secret = models.CharField(max_length=255, null=True)

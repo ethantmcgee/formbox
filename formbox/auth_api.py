@@ -1,4 +1,5 @@
 import enum
+from typing import List
 
 from ninja import Schema
 
@@ -8,6 +9,12 @@ class AuthenticationState(str, enum.Enum):
     PASSWORD_CHANGE_REQUIRED = "PASSWORD_CHANGE_REQUIRED"
     SUCCESS = "SUCCESS"
     FAILED = "FAILED"
+
+
+class MFAType(str, enum.Enum):
+    TOTP = 'TOTP'
+    SMS = 'SMS'
+    EMAIL = 'EMAIL'
 
 
 class ChangePasswordRequest(Schema):
@@ -27,8 +34,15 @@ class GetMFAOptionsRequest(Schema):
     two_factor_auth_token: str = None
 
 
+class MFAOption(Schema):
+    type: MFAType = None
+    nickname: str = None
+    code: str = None
+    preview: str = None
+
+
 class GetMFAOptionsResponse(Schema):
-    pass
+    options: List[MFAOption] = None
 
 
 class StartMFARequest(Schema):
@@ -46,7 +60,11 @@ class CompleteMFARequest(Schema):
     code: str = None
 
 
-class AuthChangePasswordRequest(Schema):
+class StartChangePasswordRequest(Schema):
+    password_reset_token: str = None
+
+
+class CompleteChangePasswordRequest(Schema):
     password_reset_token: str = None
     current_password: str = None
     new_password: str = None
