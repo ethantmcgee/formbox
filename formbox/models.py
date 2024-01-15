@@ -30,8 +30,11 @@ TWO_FACTOR_TYPE = [
 class AuthSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     password_reset_token = models.CharField(max_length=255, null=True)
+    password_reset_token_created = models.DateTimeField(null=True)
     two_factor_auth_token = models.CharField(max_length=255, null=True)
+    two_factor_auth_token_created = models.DateTimeField(null=True)
     invite_token = models.CharField(max_length=255, null=True)
+    invite_token_created = models.DateTimeField(null=True)
 
 
 @receiver(post_save, sender=User)
@@ -42,7 +45,7 @@ def create_user_auth_setting(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_auth_setting(sender, instance, **kwargs):
-    instance.auth_setting.save()
+    instance.authsetting.save()
 
 
 class TwoFactorOption(models.Model):
