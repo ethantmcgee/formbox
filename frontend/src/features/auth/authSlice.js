@@ -3,21 +3,26 @@ import { createSlice } from '@reduxjs/toolkit'
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    token: null,
+    authToken: null,
+    refreshToken: null
   },
   reducers: {
-    setToken: (state, token) => {
-      state.token = token.payload
+    setAuthToken: (state, token) => {
+      state.authToken = token.payload
     },
-    unsetToken: (state) => {
-      state.token = null
+    setRefreshToken: (state, token) => {
+      state.refreshToken = token.payload
+    },
+    logout: (state) => {
+      state.authToken = null
+      state.refreshToken = null
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setToken, unsetToken } = authSlice.actions
+export const { setAuthToken, setRefreshToken, logout  } = authSlice.actions
 
-export const selectToken = (state) => state.auth?.token
+export const selectToken = (state) => state.auth?.authToken
 
 export default authSlice.reducer

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
 import logo from '../assets/img/logo.png'
 import UsernamePassword from '../components/UsernamePassword'
 import ForgotPassword from '../components/ForgotPassword'
@@ -9,18 +10,53 @@ export default function App() {
   const MFA = 2;
   const CHANGE_PASSWORD = 3;
 
-  const [page, setPage] = useState(0);
-  const [form, setForm] = useState(<UsernamePassword setPage={setPage} />);
+  const goHome = () => {
+    setPage(USERNAME_PASSWORD);
+  }
+
+  const goToForgotPassword = () => {
+    setPage(FORGOT_PASSWORD);
+  }
+
+  const sendUsernamePassword = (username: string, password: string) => {
+    fetch("/api/auth/login",{
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify({
+        username,
+        password
+      })
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      if(data.status === 'SUCCESS') {
+        // we did it
+      } else if(data.status === 'MFA_NEEDED') {
+        // moar auth needed
+      } else if(data.status === 'PASSWORD_CHANGE_REQUIRED') {
+        // moar auth needed
+      } else {
+        toast.error("Login failed. Please try again");
+      }
+    })
+    .catch(() => toast.error("Connection Error"));
+  }
+
+  const [page, setPage] = useState(USERNAME_PASSWORD);
+  const [form, setForm] = useState(<UsernamePassword goToForgotPassword={goToForgotPassword} sendUsernamePassword={sendUsernamePassword} />);
 
   useEffect(() => {
     if(page === USERNAME_PASSWORD) {
-      setForm(<UsernamePassword setPage={setPage} />)
+      setForm(<UsernamePassword goToForgotPassword={goToForgotPassword} sendUsernamePassword={sendUsernamePassword} />)
     } else if(page === FORGOT_PASSWORD) {
-      setForm(<ForgotPassword setPage={setPage} />)
+      setForm(<ForgotPassword goHome={goHome} />)
     } else {
       setForm(<></>)
     }
-  }, [page, form])
+  }, [page, setForm])
 
   return (
     <>
@@ -37,6 +73,7 @@ export default function App() {
           {form}
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 }

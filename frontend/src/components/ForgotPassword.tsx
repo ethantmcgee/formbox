@@ -1,8 +1,8 @@
 type Properties = {
-  setPage: (arg0: number) => void
+  goHome: () => void
 }
 
-export default function UsernamePassword({ setPage }: Properties) {
+export default function UsernamePassword({ goHome }: Properties) {
   return (
     <form className="space-y-6">
       <div>
@@ -16,7 +16,7 @@ export default function UsernamePassword({ setPage }: Properties) {
             type="text"
             autoComplete="username"
             required
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className="block w-full rounded-md border-0 pl-3 pr-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>
       </div>
@@ -24,13 +24,14 @@ export default function UsernamePassword({ setPage }: Properties) {
       <div className="flex justify-center">
         <button
           className="w-1/3 rounded-md bg-indigo-600 px-3 py-1.5 mr-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => setPage(0) }
+          onClick={(e) => {e.preventDefault(); goHome()}}
           >
           Back
         </button>
         <button
           type="submit"
           className="w-1/2 rounded-md bg-indigo-600 px-3 py-1.5 ml-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          onClick={(e) => e.preventDefault()}
           >
           Sent Reset Email
         </button>

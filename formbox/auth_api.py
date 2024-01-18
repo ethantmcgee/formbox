@@ -74,3 +74,5 @@ class LoginResponse(Schema):
     state: AuthenticationState = None
     password_reset_token: str = None
     two_factor_auth_token: str = None
+    auth_token: str = None
+    refresh_token: str = None
