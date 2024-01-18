@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { selectToken } from '../features/auth/authSlice'
 
 type Props = {
-  children: ReactNode
+  children?: ReactNode
 }
 
 export default function AuthGuard({children} : Props) {

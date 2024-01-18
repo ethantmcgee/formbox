@@ -31,7 +31,7 @@ class LoginRequest(Schema):
 
 
 class GetMFAOptionsRequest(Schema):
-    two_factor_auth_token: str = None
+    twoFactorAuthToken: str = None
 
 
 class MFAOption(Schema):
@@ -46,8 +46,8 @@ class GetMFAOptionsResponse(Schema):
 
 
 class StartMFARequest(Schema):
-    two_factor_auth_token: str = None
-    two_factor_method: str = None
+    twoFactorAuthToken: str = None
+    twoFactorMethod: str = None
 
 
 class StartMFAResponse(Schema):
@@ -55,24 +55,24 @@ class StartMFAResponse(Schema):
 
 
 class CompleteMFARequest(Schema):
-    two_factor_auth_token: str = None
-    two_factor_method: str = None
+    twoFactorAuthToken: str = None
+    twoFactorMethod: str = None
     code: str = None
 
 
 class StartChangePasswordRequest(Schema):
-    password_reset_token: str = None
+    passwordResetToken: str = None
 
 
 class CompleteChangePasswordRequest(Schema):
-    password_reset_token: str = None
-    current_password: str = None
-    new_password: str = None
+    passwordResetToken: str = None
+    currentPassword: str = None
+    newPassword: str = None
 
 
 class LoginResponse(Schema):
     state: AuthenticationState = None
-    password_reset_token: str = None
-    two_factor_auth_token: str = None
-    auth_token: str = None
-    refresh_token: str = None
+    passwordResetToken: str = None
+    twoFactorAuthToken: str = None
+    authToken: str = None
+    refreshToken: str = None

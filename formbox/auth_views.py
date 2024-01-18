@@ -28,9 +28,9 @@ def login(request, data: LoginRequest):
     user = authenticate(username=data.username, password=data.password)
     if user:
         tokens = get_tokens_for_user(user)
-        return LoginResponse(state=AuthenticationState.SUCCESS, auth_token=tokens['access'], refresh_token=tokens['refresh'])
+        return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
     else:
-        return LoginResponse(state=AuthenticationState.FAILED)
+        return {"state": AuthenticationState.FAILED}
 
 
 @never_cache

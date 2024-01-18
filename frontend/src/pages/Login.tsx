@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router'
+import { setAuthToken, setRefreshToken } from '../features/auth/authSlice'
 import logo from '../assets/img/logo.png'
 import UsernamePassword from '../components/UsernamePassword'
 import ForgotPassword from '../components/ForgotPassword'
@@ -9,6 +12,9 @@ export default function App() {
   const FORGOT_PASSWORD = 1;
   const MFA = 2;
   const CHANGE_PASSWORD = 3;
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const goHome = () => {
     setPage(USERNAME_PASSWORD);
@@ -32,17 +38,21 @@ export default function App() {
     })
     .then((res) => res.json())
     .then((data) => {
-      if(data.status === 'SUCCESS') {
-        // we did it
-      } else if(data.status === 'MFA_NEEDED') {
+      if(data.state === 'SUCCESS') {
+        dispatch(setAuthToken(data.authToken))
+        dispatch(setRefreshToken(data.refreshToken))
+        navigate("/")
+      } else if(data.state === 'MFA_NEEDED') {
         // moar auth needed
-      } else if(data.status === 'PASSWORD_CHANGE_REQUIRED') {
+      } else if(data.state === 'PASSWORD_CHANGE_REQUIRED') {
         // moar auth needed
       } else {
         toast.error("Login failed. Please try again");
       }
     })
-    .catch(() => toast.error("Connection Error"));
+    .catch(() => {
+      toast.error("Connection Error")
+    });
   }
 
   const [page, setPage] = useState(USERNAME_PASSWORD);
@@ -73,7 +83,6 @@ export default function App() {
           {form}
         </div>
       </div>
-      <ToastContainer/>
     </>
   );
 }

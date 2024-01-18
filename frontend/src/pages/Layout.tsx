@@ -1,9 +1,11 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { ToastContainer } from 'react-toastify';
 import { Outlet } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import { selectToken } from '../features/auth/authSlice'
+import 'react-toastify/dist/ReactToastify.css';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -133,6 +135,7 @@ export default function Layout() {
 
       <div className="h-screen p-5">
         <Outlet />
+        <ToastContainer/>
       </div>
     </>
   )
