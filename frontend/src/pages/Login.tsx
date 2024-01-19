@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react'
-import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router'
-import { setAuthToken, setRefreshToken } from '../features/auth/authSlice'
+import {useEffect, useState} from 'react'
+import {toast} from 'react-toastify';
+import {useDispatch, useSelector} from 'react-redux'
+import {useNavigate} from 'react-router'
+import {selectToken, setAuthToken, setRefreshToken} from '../features/auth/authSlice'
+import {post} from '../authenticated-fetch'
+import {AuthenticationState, LoginResponse} from '../types'
 import logo from '../assets/img/logo.png'
 import UsernamePassword from '../components/UsernamePassword'
 import ForgotPassword from '../components/ForgotPassword'
 
 export default function App() {
+  const token = useSelector(selectToken)
+
   const USERNAME_PASSWORD = 0;
   const FORGOT_PASSWORD = 1;
   const MFA = 2;
@@ -24,34 +28,32 @@ export default function App() {
     setPage(FORGOT_PASSWORD);
   }
 
+  const goToMFA = () => {
+    setPage(MFA);
+  }
+
+  const goToChangePassword = () => {
+    setPage(CHANGE_PASSWORD);
+  }
+
   const sendUsernamePassword = (username: string, password: string) => {
-    fetch("/api/auth/login",{
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: "POST",
-      body: JSON.stringify({
-        username,
-        password
-      })
-    })
-    .then((res) => res.json())
-    .then((data) => {
-      if(data.state === 'SUCCESS') {
+    post<LoginResponse>("/api/auth/login",{
+      username,
+      password
+    }, token).then((data) => {
+      if(data.state === AuthenticationState.SUCCESS) {
         dispatch(setAuthToken(data.authToken))
         dispatch(setRefreshToken(data.refreshToken))
         navigate("/")
-      } else if(data.state === 'MFA_NEEDED') {
+      } else if(data.state === AuthenticationState.MFA_NEEDED) {
         // moar auth needed
-      } else if(data.state === 'PASSWORD_CHANGE_REQUIRED') {
+        goToMFA();
+      } else if(data.state === AuthenticationState.PASSWORD_CHANGE_REQUIRED) {
         // moar auth needed
+        goToChangePassword();
       } else {
         toast.error("Login failed. Please try again");
       }
-    })
-    .catch(() => {
-      toast.error("Connection Error")
     });
   }
 
