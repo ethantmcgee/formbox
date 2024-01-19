@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { ToastContainer } from 'react-toastify';
 import { Outlet } from "react-router-dom";
 import { useSelector } from 'react-redux'
@@ -18,8 +18,8 @@ export default function Layout() {
     name: string,
     link: string
   })[] = [{
-    name: 'Teams',
-    link: '/teams'
+    name: 'Forms',
+    link: '/forms'
   }, {
     name: 'Users',
     link: '/users'
@@ -65,11 +65,7 @@ export default function Layout() {
                       <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
-                        />
+                        <UserCircleIcon className="w-6 h-6"/>
                       </Menu.Button>
                     </div>
                     <Transition

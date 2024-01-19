@@ -57,19 +57,7 @@ class TwoFactorOption(models.Model):
     nickname = models.CharField(max_length=255, null=True)
 
 
-class Team(models.Model):
-    name = models.CharField(max_length=255)
-    users = models.ManyToManyField(User)
-
-
-class TeamInvite(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitee_id')
-    invited_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invited_by_id')
-
-
-class Project(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+class Form(models.Model):
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     protection = models.CharField(max_length=10, choices=PROTECTION_TYPE)
@@ -80,10 +68,10 @@ class Project(models.Model):
 
 
 class ProjectNotification(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Form, on_delete=models.CASCADE)
     email = models.CharField(max_length=255)
 
 
 class ProjectSubmission(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Form, on_delete=models.CASCADE)
     submission = models.JSONField()

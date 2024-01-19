@@ -19,10 +19,12 @@ from django.urls import path
 from ninja import NinjaAPI
 
 from formbox.auth_views import router as auth_router
+from formbox.settings_views import router as settings_router
 
 api = NinjaAPI()
 
 api.add_router("/auth/", auth_router, tags=['Authentication'])
+api.add_router("/settings/", settings_router, tags=['Settings'])
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -68,7 +68,7 @@ export default function App() {
     } else {
       setForm(<></>)
     }
-  }, [page, setForm])
+  }, [page, setForm, sendUsernamePassword])
 
   return (
     <>
