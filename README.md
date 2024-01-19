@@ -9,6 +9,10 @@
 
 ---
 
+> Note: The project has not yet reached version 1.0.0 and is currently 
+> in alpha stage at best.  Progress is on-going, v1.0.0 is expected in
+> mid-February 2024.
+
 ## Overview
 
 Formbox.dev is a self-hostable form submission backend for static
@@ -19,13 +23,93 @@ spam protection.
 
 ## Features
 
-- Projects
-  - Host unlimited projects (one per form)
-  - Add as many contributors per project as desired
-  - Configurable automatic rotation of form submissions
-- Notifications
-  - Add as many notifiers per project as desired
-  - Get notified of submissions immediately, on a digest or not at all
+- Unlimited Forms
+- Unlimited Collaborators
+- Unlimited Notifications
+- Fully Self Hostable
+- No Metric / Data Collection
+- Bring Your Own SMTP
+- Twilio Integration
+- MFA
+
+## Setup
+
+To host FormBox.dev, you'll need an SMTP provider (and if MFA via SMS
+is desired, an active Twilio account).  The following docker compose
+sample should get you up and going quickly, There are a couple env vars
+you'll want to set or customize for security (these are marked as `???`
+in the sample below).
+
+| Environment Variable            | Purpose                                                      | Valid Values    | Example                             |
+|---------------------------------|--------------------------------------------------------------|-----------------|-------------------------------------|
+| POSTGRES_USER / DB_USER         | Username for the database                                    | *any*           | username                            |
+| POSTGRES_PASSWORD / DB_PASSWORD | Password for the database                                    | *any*           | password                            |
+| SMTP_HOST                       | Host for SMTP server                                         | *any*           | smtp.mailgun.org                    |
+| SMTP_PORT                       | Port for SMTP server                                         | *any*           | 587                                 |
+| SMTP_TLS_ENABLED                | Whether to enable TLS in SMTP communication                  | *True*, *False* | True                                |
+| SMTP_USERNAME                   | Username for SMTP server                                     | *any*           | username                            |
+| SMTP_PASSWORD                   | Password for SMTP server                                     | *any*           | password                            |
+| SMS_ENABLED                     | Whether to enable SMS communications                         | *True*, *False* | True                                |
+| TWILIO_NUMBER                   | The number for your Twilio Sender (must be 10DLC registered) | *any*           | +18008888888                        |
+| TWILIO_SID                      | SID of Twilio Account                                        | *any*           | password                            |
+| TWILIO_AUTH_KEY                 | Twilio Auth Key                                              | *any*           | password                            |
+| HOST                            | Host at which formbox is hosted                              | *any*           | app.formbox.dev                     |
+| CORS_HOSTS                      | Hosts to allow submissions from                              | *any*           | site1.formbox.dev,site2.formbox.dev |
+
+
+```yaml
+version: '3'
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ???
+      POSTGRES_PASSWORD: ???
+      POSTGRES_DB: formbox
+      PGDATA: /data/postgres
+    volumes:
+      - datavolume:/data/postgres
+  redis:
+    image: redis:6-alpine
+  formbox:
+    image: adagotech/formbox:latest
+    environment:
+      SMTP_HOST: ???
+      SMTP_PORT: ???
+      SMTP_TLS_ENABLED: ???
+      SMTP_USERNAME: ???
+      SMTP_PASSWORD: ???
+      SMS_ENABLED: ???
+      TWILIO_NUMBER: ???
+      TWILIO_SID: ???
+      TWILIO_AUTH_KEY: ???
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ???
+      DB_PASSWORD: ???
+      DB_NAME: formbox
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      HOST: ???
+      CORS_HOSTS: ???
+    ports:
+      - "80:80"
+volumes:
+  datavolume:
+```
+
+Once the system boots, you can login by visiting "http://localhost",
+and entering the default username / password of `admin` / `admin`.
+This should be changed at first opportunity.  We also recommend each
+user enable MFA (TOTP preferred) if this system will be hosted in a
+publically accessible way.
+
+## Repository Contents
+
+- `mysite` - contains settings and configuration for Django project
+- `formbox` - contains backend api endpoint definitions for Django project
+- `frontend` - contains frontend for Formbox.dev written in React
+- `docs` - contains assets for the repository's `.md` files
 
 ## Contributions
 
