@@ -40,22 +40,23 @@ sample should get you up and going quickly, There are a couple env vars
 you'll want to set or customize for security (these are marked as `???`
 in the sample below).
 
-| Environment Variable            | Purpose                                     | Valid Values    | Example                             |
-|---------------------------------|---------------------------------------------|-----------------|-------------------------------------|
-| POSTGRES_USERNAME / DB_USERNAME | Username for the database                   | *any*           | username                            |
-| POSTGRES_PASSWORD / DB_PASSWORD | Password for the database                   | *any*           | password                            |
-| SMTP_HOST                       | Host for SMTP server                        | *any*           | smtp.mailgun.org                    |
-| SMTP_PORT                       | Port for SMTP server                        | *any*           | 587                                 |
-| SMTP_TLS_ENABLED                | Whether to enable TLS in SMTP communication | *True*, *False* | True                                |
-| SMTP_USERNAME                   | Username for SMTP server                    | *any*           | username                            |
-| SMTP_PASSWORD                   | Password for SMTP server                    | *any*           | password                            |
-| SMS_ENABLED                     | Whether to enable SMS communications        | *True*, *False* | True                                |
-| TWILIO_VERIFY_ID                | Verify Service Id in Twilio Account         | *any*           | password                            |
-| TWILIO_SID                      | SID of Twilio Account                       | *any*           | password                            |
-| TWILIO_AUTH_KEY                 | Twilio Auth Key                             | *any*           | password                            |
-| HOST                            | Host at which formbox is hosted             | *any*           | app.formbox.dev                     |
-| CORS_HOSTS                      | Hosts to allow submissions from             | *any*           | site1.formbox.dev,site2.formbox.dev |
-
+| Environment Variable            | Purpose                                       | Valid Values    | Example                             |
+|---------------------------------|-----------------------------------------------|-----------------|-------------------------------------|
+| POSTGRES_USERNAME / DB_USERNAME | Username for the database                     | *any*           | username                            |
+| POSTGRES_PASSWORD / DB_PASSWORD | Password for the database                     | *any*           | password                            |
+| SMTP_HOST                       | Host for SMTP server                          | *any*           | smtp.mailgun.org                    |
+| SMTP_PORT                       | Port for SMTP server                          | *any*           | 587                                 |
+| SMTP_TLS_ENABLED                | Whether to enable TLS in SMTP communication   | *True*, *False* | True                                |
+| SMTP_USERNAME                   | Username for SMTP server                      | *any*           | username                            |
+| SMTP_PASSWORD                   | Password for SMTP server                      | *any*           | password                            |
+| SMTP_FROM                       | EMail to send from                            | *any*           | no-reply@formbox.dev                |
+| SMS_ENABLED                     | Whether to enable SMS communications          | *True*, *False* | True                                |
+| TWILIO_VERIFY_ID                | Verify Service Id in Twilio Account           | *any*           | VAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  |
+| TWILIO_SID                      | SID of Twilio Account                         | *any*           | AC2XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  |
+| TWILIO_AUTH_KEY                 | Twilio Auth Key                               | *any*           | 912XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    |
+| HOST                            | Host at which formbox is hosted               | *any*           | app.formbox.dev                     |
+| CORS_HOSTS                      | Hosts to allow submissions from               | *any*           | site1.formbox.dev,site2.formbox.dev |
+| SECRET_KEY                      | Used to hash passwords and secure secret data | *any*           | um8XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX |
 
 ```yaml
 version: '3'
@@ -92,6 +93,7 @@ services:
       REDIS_PORT: 6379
       HOST: ???
       CORS_HOSTS: ???
+      SECRET_KEY: ???
     ports:
       - "80:80"
 volumes:
