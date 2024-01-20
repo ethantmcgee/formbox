@@ -1,23 +1,40 @@
+import { useCallback } from 'react';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
+
 type Properties = {
   goHome: () => void
 }
 
-export default function UsernamePassword({ goHome }: Properties) {
+const schema = yup.object({
+  email: yup.string().email().required()
+}).required();
+
+export default function ForgotPassword({ goHome }: Properties) {
+  const { register, handleSubmit, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
+
+  const onSubmit = useCallback((data: { email: string }) => {
+    
+  }, []);
+  
   return (
-    <form className="space-y-6">
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-          Username / Email Address
+          Email Address
         </label>
         <div className="mt-2">
           <input
-            id="username"
-            name="username"
+            {...register("email")}
             type="text"
-            autoComplete="username"
+            autoComplete="email"
             required
             className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
+          <p className="text-red-600">{errors.email?.message}</p>
         </div>
       </div>
 
@@ -32,7 +49,6 @@ export default function UsernamePassword({ goHome }: Properties) {
         <button
           type="submit"
           className="w-1/2 rounded-md bg-indigo-600 px-3 py-1.5 ml-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={(e) => e.preventDefault()}
           >
           Sent Reset Email
         </button>

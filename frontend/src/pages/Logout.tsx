@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router'
 import { logout } from '../features/auth/authSlice'
 import AuthGuard from '../components/AuthGuard'
 
-export default function App() {
+export default function Logout() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 

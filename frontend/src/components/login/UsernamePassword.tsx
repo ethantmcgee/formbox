@@ -1,31 +1,42 @@
-import { useState } from 'react';
+import { useCallback } from 'react';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from "yup";
 
 type Properties = {
   goToForgotPassword: () => void
   sendUsernamePassword: (arg0: string, arg1: string) => void
 }
 
+const schema = yup.object({
+  username: yup.string().required(),
+  password: yup.string().required()
+}).required();
+
 export default function UsernamePassword({ goToForgotPassword, sendUsernamePassword }: Properties) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { register, handleSubmit, formState:{ errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
+  
+  const onSubmit = useCallback((data: { username: string, password: string }) => {
+    sendUsernamePassword(data.username, data.password);
+  }, [sendUsernamePassword]);
 
   return (
-    <form className="space-y-6" onSubmit={(e) => {e.preventDefault(); sendUsernamePassword(username, password)}}>
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-          Username / Email Address
+          Username
         </label>
         <div className="mt-2">
           <input
-            id="username"
-            name="username"
+            {...register("username")}
             type="text"
             autoComplete="username"
             required
             className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
           />
+          <p className="text-red-600">{errors.username?.message}</p>
         </div>
       </div>
 
@@ -42,15 +53,13 @@ export default function UsernamePassword({ goToForgotPassword, sendUsernamePassw
         </div>
         <div className="mt-2">
           <input
-            id="password"
-            name="password"
+            {...register("password")}
             type="password"
-            autoComplete="current-password"
+            autoComplete="password"
             required
             className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
           />
+          <p className="text-red-600">{errors.password?.message}</p>
         </div>
       </div>
 
@@ -58,7 +67,6 @@ export default function UsernamePassword({ goToForgotPassword, sendUsernamePassw
         <button
           type="submit"
           className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={(e) => {e.preventDefault(); sendUsernamePassword(username, password)}}
           >
           Sign In
         </button>

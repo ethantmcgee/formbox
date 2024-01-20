@@ -15,6 +15,7 @@ function sendData<T>(method: string, url: string, body: any, token: string | nul
     .then((data) => resolve(data))
     .catch((e) => {
       toast.error("Connection Error")
+      window.location.assign("/logout");
       reject(e)
     });
   });

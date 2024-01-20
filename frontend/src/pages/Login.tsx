@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useCallback} from 'react'
 import {toast} from 'react-toastify';
 import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate} from 'react-router'
@@ -6,10 +6,10 @@ import {selectToken, setAuthToken, setRefreshToken} from '../features/auth/authS
 import {post} from '../authenticated-fetch'
 import {AuthenticationState, LoginResponse} from '../types'
 import logo from '../assets/img/logo.png'
-import UsernamePassword from '../components/UsernamePassword'
-import ForgotPassword from '../components/ForgotPassword'
+import UsernamePassword from '../components/login/UsernamePassword'
+import ForgotPassword from '../components/login/ForgotPassword'
 
-export default function App() {
+export default function Login() {
   const token = useSelector(selectToken)
 
   const USERNAME_PASSWORD = 0;
@@ -36,7 +36,7 @@ export default function App() {
     setPage(CHANGE_PASSWORD);
   }
 
-  const sendUsernamePassword = (username: string, password: string) => {
+  const sendUsernamePassword = useCallback((username: string, password: string) => {
     post<LoginResponse>("/api/auth/login",{
       username,
       password
@@ -55,7 +55,7 @@ export default function App() {
         toast.error("Login failed. Please try again");
       }
     });
-  }
+  }, [dispatch, navigate, token]);
 
   const [page, setPage] = useState(USERNAME_PASSWORD);
   const [form, setForm] = useState(<UsernamePassword goToForgotPassword={goToForgotPassword} sendUsernamePassword={sendUsernamePassword} />);

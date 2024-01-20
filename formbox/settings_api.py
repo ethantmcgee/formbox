@@ -3,6 +3,20 @@ import enum
 from ninja import Schema
 
 
+class GetUserResponse(Schema):
+    username: str = None
+    email: str = None
+
+
+class CheckAvailabilityResponse(Schema):
+    available: bool = None
+
+
+class ChangeUsernameState(str, enum.Enum):
+    SUCCESS = "SUCCESS"
+    USERNAME_ALREADY_IN_USE = "USERNAME_ALREADY_IN_USE"
+
+
 class ChangeEmailState(str, enum.Enum):
     SUCCESS = "SUCCESS"
     EMAIL_ALREADY_IN_USE = "EMAIL_ALREADY_IN_USE"
@@ -14,12 +28,20 @@ class ChangePasswordState(str, enum.Enum):
     NEW_PASSWORD_INSECURE = "NEW_PASSWORD_INSECURE"
 
 
+class ChangeUsernameRequest(Schema):
+    newUsername: str = None
+
+
+class ChangeUsernameResponse(Schema):
+    state: ChangeUsernameState = None
+
+
 class ChangeEmailRequest(Schema):
     newEmail: str = None
 
 
 class ChangeEmailResponse(Schema):
-    status: ChangeEmailState = None
+    state: ChangeEmailState = None
 
 
 class ChangePasswordRequest(Schema):
@@ -28,4 +50,4 @@ class ChangePasswordRequest(Schema):
 
 
 class ChangePasswordResponse(Schema):
-    status: ChangePasswordState = None
+    state: ChangePasswordState = None
