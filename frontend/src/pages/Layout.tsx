@@ -19,7 +19,7 @@ export default function Layout() {
     link: string
   })[] = [{
     name: 'Forms',
-    link: '/forms'
+    link: '/'
   }, {
     name: 'Users',
     link: '/users'

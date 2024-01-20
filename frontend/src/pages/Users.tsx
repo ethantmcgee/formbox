@@ -1,14 +1,14 @@
 import React from 'react';
 import AuthGuard from '../components/AuthGuard'
 
-export default function Home() {
+export default function Users() {
   return (
     <AuthGuard>
       <div className="container mx-auto">
         <h1 className="text-3xl font-bold underline">
-          Forms
+          Users
         </h1>
       </div>
     </AuthGuard>
-  );
+    );
 }

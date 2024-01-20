@@ -1,9 +1,12 @@
+from typing import List
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.views.decorators.cache import never_cache
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
 
+from formbox.models import TwoFactorOption
 from formbox.settings_api import *
 
 router = Router()
@@ -57,3 +60,15 @@ def password_change(request, data: ChangePasswordRequest):
         return {"state": ChangePasswordState.SUCCESS}
     else:
         return {"state": ChangePasswordState.CURRENT_PASSWORD_INCORRECT}
+
+
+@never_cache
+@router.get("/mfa-options", response=List[TwoFactor], auth=JWTAuth())
+def password_change(request):
+    options = TwoFactorOption.objects.filter(user=request.user).all()
+    return [{
+        "id": option.id,
+        "nickname": option.nickname,
+        "twoFactorType": option.two_factor_type,
+        "target": option.get_masked_target()
+    } for option in options]

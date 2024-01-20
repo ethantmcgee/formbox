@@ -6,6 +6,7 @@ import './index.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
 import Home from "./pages/Home";
+import Users from "./pages/Users";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Settings from "./pages/Settings";
@@ -27,6 +28,7 @@ root.render(
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
+              <Route path="users" element={<Users />} />
               <Route path="login" element={<Login />} />
               <Route path="logout" element={<Logout />} />
               <Route path="settings" element={<Settings />} />

@@ -22,6 +22,12 @@ class ChangeEmailState(str, enum.Enum):
     EMAIL_ALREADY_IN_USE = "EMAIL_ALREADY_IN_USE"
 
 
+class TwoFactorType(str, enum.Enum):
+    TOTP = "TOTP"
+    SMS = "SMS"
+    EMAIL = "EMAIL"
+
+
 class ChangePasswordState(str, enum.Enum):
     SUCCESS = "SUCCESS"
     CURRENT_PASSWORD_INCORRECT = "CURRENT_PASSWORD_INCORRECT"
@@ -51,3 +57,10 @@ class ChangePasswordRequest(Schema):
 
 class ChangePasswordResponse(Schema):
     state: ChangePasswordState = None
+
+
+class TwoFactor(Schema):
+    id: int = None
+    nickname: str = None
+    target: str = None
+    twoFactorType: TwoFactorType = None

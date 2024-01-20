@@ -21,6 +21,12 @@ export enum ChangePasswordState {
   NEW_PASSWORD_INSECURE = "NEW_PASSWORD_INSECURE"
 }
 
+export enum TwoFactorType {
+  TOTP = 'TOTP',
+  SMS = 'SMS',
+  EMAIL = 'EMAIL'
+}
+
 export class LoginResponse {
   state: AuthenticationState | null = null;
   passwordResetToken: string | null = null;
@@ -48,4 +54,11 @@ export class ChangeEmailResponse {
 
 export class ChangePasswordResponse {
   state: ChangePasswordState | null = null;
+}
+
+export class TwoFactorOption {
+  id: number | null = null;
+  nickname: string | null = null;
+  twoFactorType: TwoFactorType | null = null;
+  target: string | null = null;
 }

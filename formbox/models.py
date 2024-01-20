@@ -56,6 +56,13 @@ class TwoFactorOption(models.Model):
     secret = models.CharField(max_length=255, null=True)
     nickname = models.CharField(max_length=255, null=True)
 
+    def get_masked_target(self):
+        if self.two_factor_type == 'EMAIL':
+            before, after = self.target.split("@")
+            return f"{before[:1]}{('*' * 6)}@{after}"
+        else:
+            return f"{('*' * 6)}{self.target[-4:]}"
+
 
 class Form(models.Model):
     name = models.CharField(max_length=255)
