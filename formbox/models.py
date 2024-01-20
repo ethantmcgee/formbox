@@ -55,6 +55,7 @@ class TwoFactorOption(models.Model):
     target = models.CharField(max_length=255, null=True)
     secret = models.CharField(max_length=255, null=True)
     nickname = models.CharField(max_length=255, null=True)
+    active = models.BooleanField(default=False)
 
     def get_masked_target(self):
         if self.two_factor_type == 'EMAIL':

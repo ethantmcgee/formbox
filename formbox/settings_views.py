@@ -65,7 +65,7 @@ def password_change(request, data: ChangePasswordRequest):
 @never_cache
 @router.get("/mfa-options", response=List[TwoFactor], auth=JWTAuth())
 def password_change(request):
-    options = TwoFactorOption.objects.filter(user=request.user).all()
+    options = TwoFactorOption.objects.filter(user=request.user, active=True).all()
     return [{
         "id": option.id,
         "nickname": option.nickname,

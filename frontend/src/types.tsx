@@ -61,4 +61,5 @@ export class TwoFactorOption {
   nickname: string | null = null;
   twoFactorType: TwoFactorType | null = null;
   target: string | null = null;
+  code: string | null = null;
 }

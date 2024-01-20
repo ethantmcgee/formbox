@@ -46,7 +46,7 @@ export default function ChangePassword() {
     <form className="grid grid-cols-1" onSubmit={handleSubmit(onSubmit)}>
       <div className="grid grid-cols-1">
         <div className="px-1 py-2">
-          <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="currentPassword" className="block text-sm font-medium leading-6 text-gray-900">
             Current Password
           </label>
           <div className="mt-2">
@@ -63,7 +63,7 @@ export default function ChangePassword() {
       </div>
       <div className="grid grid-cols-2">
         <div className="px-1 py-2">
-          <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="newPassword" className="block text-sm font-medium leading-6 text-gray-900">
             New Password
           </label>
           <div className="mt-2">
@@ -77,7 +77,7 @@ export default function ChangePassword() {
           </div>
         </div>
         <div className="px-1 py-2">
-          <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium leading-6 text-gray-900">
             Confirm Password
           </label>
           <div className="mt-2">
