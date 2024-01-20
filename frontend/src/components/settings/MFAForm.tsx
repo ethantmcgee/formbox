@@ -25,7 +25,7 @@ export default function MFAForm({ goToTable }: Properties) {
 
   const onSubmit = useCallback((data: { nickname: string, target: string, twoFactorType: string, code: string }) => {
     goToTable()
-  }, []);
+  }, [goToTable]);
 
   const type = watch("twoFactorType");
   let restOfForm = (<></>);

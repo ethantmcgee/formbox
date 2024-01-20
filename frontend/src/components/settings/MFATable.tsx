@@ -17,7 +17,7 @@ export default function ManageMFA({ goToAdd, goToDelete }: Properties) {
     get<TwoFactorOption[]>('/api/settings/mfa-options', token).then((data) => {
       setMfaOptions(data)
     })
-  }, [])
+  }, [token])
   
   return (
     <>
