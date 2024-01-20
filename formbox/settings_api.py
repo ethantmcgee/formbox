@@ -28,6 +28,11 @@ class TwoFactorType(str, enum.Enum):
     EMAIL = "EMAIL"
 
 
+class DeleteTwoFactorState(str, enum.Enum):
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
+
+
 class ChangePasswordState(str, enum.Enum):
     SUCCESS = "SUCCESS"
     CURRENT_PASSWORD_INCORRECT = "CURRENT_PASSWORD_INCORRECT"
@@ -63,4 +68,11 @@ class TwoFactor(Schema):
     id: int = None
     nickname: str = None
     target: str = None
+    secret: str = None
     twoFactorType: TwoFactorType = None
+    active: bool = None
+    code: str = None
+
+
+class DeleteTwoFactorResponse(Schema):
+    state: DeleteTwoFactorState = None

@@ -1,7 +1,9 @@
+from http.client import HTTPException
 from typing import List
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.views.decorators.cache import never_cache
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
@@ -72,3 +74,39 @@ def password_change(request):
         "twoFactorType": option.two_factor_type,
         "target": option.get_masked_target()
     } for option in options]
+
+
+@never_cache
+@router.get("/save-mfa", response=TwoFactor, auth=JWTAuth())
+def password_change(request, data: TwoFactor):
+    # only new or inactive mfa options can be saved, active options
+    # must be deleted and added again
+    option = TwoFactorOption()
+    if data.id:
+        option = TwoFactorOption.objects.get(id=data.id,active=False)
+        if option is None: return HttpResponse('Unauthorized', status=401)
+    option.nickname = data.nickname
+    option.two_factor_type = data.twoFactorType
+    option.secret = data.secret
+    option.target = data.target
+    option.active = data.active
+    if data.active and data.code:
+        pass # validate that code is correct before we save
+    elif not data.active and data.code:
+        option.code = data.code # save code and code to user
+    option.save()
+    return {
+        "id": option.id,
+        "nickname": option.nickname,
+        "twoFactorType": option.two_factor_type,
+        "target": option.target,
+        "secret": option.secret,
+        "active": option.active
+    }
+
+
+@never_cache
+@router.get("/delete-mfa", response=DeleteTwoFactorResponse, auth=JWTAuth())
+def password_change(request, data: TwoFactor):
+    TwoFactorOption.objects.filter(id=data.id).delete()
+    return {"state": DeleteTwoFactorState.SUCCESS}
