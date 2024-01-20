@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import {useEffect, useState, useCallback} from 'react';
+import {useEffect, useCallback} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {get, post} from '../../authenticated-fetch'
@@ -12,7 +12,7 @@ const schema = yup.object({
   email: yup.string().email().required()
 }).required();
 
-export default function ChangeUsername() {
+export default function ChangeEmail() {
   const token = useSelector(selectToken)
   
   const { setValue, getValues, register, handleSubmit, formState:{ errors } } = useForm({
@@ -48,12 +48,12 @@ export default function ChangeUsername() {
   return (
     <>
       <h3 className="pt-3">Change Email</h3>
-      <form className="grid grid-cols-1 py-3" onSubmit={handleSubmit(onSubmit)}>
-        <div>
+      <form className="grid grid-cols-1" onSubmit={handleSubmit(onSubmit)}>
+        <div className="px-1 py-2">
           <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
             Email
           </label>
-          <div className="mt-2">
+          <div>
             <input
               {...register("email")}
               type="email"

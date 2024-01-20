@@ -15,6 +15,12 @@ export enum ChangeEmailState {
   EMAIL_ALREADY_IN_USE = "EMAIL_ALREADY_IN_USE"
 }
 
+export enum ChangePasswordState {
+  SUCCESS = "SUCCESS",
+  CURRENT_PASSWORD_INCORRECT = "CURRENT_PASSWORD_INCORRECT",
+  NEW_PASSWORD_INSECURE = "NEW_PASSWORD_INSECURE"
+}
+
 export class LoginResponse {
   state: AuthenticationState | null = null;
   passwordResetToken: string | null = null;
@@ -38,4 +44,8 @@ export class ChangeUsernameResponse {
 
 export class ChangeEmailResponse {
   state: ChangeEmailState | null = null;
+}
+
+export class ChangePasswordResponse {
+  state: ChangePasswordState | null = null;
 }

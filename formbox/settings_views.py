@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.views.decorators.cache import never_cache
 from ninja import Router
@@ -49,4 +50,10 @@ def email_change(request, data: ChangeEmailRequest):
 @never_cache
 @router.post("/password-change", response=ChangePasswordResponse, auth=JWTAuth())
 def password_change(request, data: ChangePasswordRequest):
-    return {"state": ChangePasswordState.SUCCESS}
+    user = authenticate(username=request.user.username, password=data.currentPassword)
+    if user:
+        user.set_password(data.newPassword)
+        user.save()
+        return {"state": ChangePasswordState.SUCCESS}
+    else:
+        return {"state": ChangePasswordState.CURRENT_PASSWORD_INCORRECT}
