@@ -1,4 +1,8 @@
-import { TwoFactorOption } from '../../types';
+import {DeleteTwoFactorResponse, DeleteTwoFactorState, TwoFactorOption} from '../../types';
+import {useSelector} from 'react-redux'
+import {selectToken} from '../../features/auth/authSlice'
+import {post} from '../../authenticated-fetch'
+import {toast} from 'react-toastify';
 
 type Properties = {
   goToTable: () => void,
@@ -6,8 +10,22 @@ type Properties = {
 }
 
 export default function DeleteMFA({ goToTable, mfaToBeDeleted }: Properties) {
+  const token = useSelector(selectToken)
+
+  const doDelete = () => {
+    post<DeleteTwoFactorResponse>('/api/settings/delete-mfa', {id: mfaToBeDeleted?.id}, token).then((data) => {
+      if(data.state === DeleteTwoFactorState.SUCCESS) {
+        toast.success("MFA Option Deleted")
+        goToTable()
+      } else {
+        toast.error(data.state)
+      }
+    })
+  }
+
   return (
     <>
+      <p>Are you sure you want to do this?  Once deleted, this MFA option will have to be setup again, it cannot be recovered.</p>
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => goToTable()}>
           Cancel
@@ -15,6 +33,7 @@ export default function DeleteMFA({ goToTable, mfaToBeDeleted }: Properties) {
         <button
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          onClick={() => doDelete()}
           >
           Delete
         </button>

@@ -97,21 +97,22 @@ def password_change(request, data: TwoFactor):
     option.secret = data.secret
     option.target = data.target
     option.active = data.active
+    option.user = User.objects.get(id=request.user.id)
     if data.code:
-        if not validate_mfa(request.user, option, data.code):
+        if not validate_mfa(option, data.code):
             return {
                 "state": TwoFactorSaveState.CODE_INCORRECT
             }
     elif not data.active:
-        send_mfa(request.user, option)
+        send_mfa(option)
     option.save()
     return {
         "state": TwoFactorSaveState.SUCCESS,
         "id": option.id,
         "nickname": option.nickname,
         "twoFactorType": option.two_factor_type,
-        "target": option.target,
-        "secret": option.secret,
+        "target": option.target if option.target else "",
+        "secret": option.secret if option.secret else "",
         "active": option.active
     }
 

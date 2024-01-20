@@ -34,6 +34,11 @@ export enum TwoFactorSaveState {
   CANNOT_UPDATE = "CANNOT_UPDATE"
 }
 
+export enum DeleteTwoFactorState {
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED"
+}
+
 export class LoginResponse {
   state: AuthenticationState | null = null;
   passwordResetToken: string | null = null;
@@ -70,4 +75,8 @@ export class TwoFactorOption {
   twoFactorType: TwoFactorType | null = null;
   target: string | null = null;
   code: string | null = null;
+}
+
+export class DeleteTwoFactorResponse {
+  state: DeleteTwoFactorState | null = null;
 }

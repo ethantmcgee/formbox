@@ -49,8 +49,7 @@ def save_user_auth_setting(sender, instance, **kwargs):
 
 
 class TwoFactorOption(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    code = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     two_factor_type = models.CharField(max_length=6, choices=TWO_FACTOR_TYPE)
     target = models.CharField(max_length=255, null=True)
     secret = models.CharField(max_length=255, null=True)
@@ -61,8 +60,9 @@ class TwoFactorOption(models.Model):
         if self.two_factor_type == 'EMAIL':
             before, after = self.target.split("@")
             return f"{before[:1]}{('*' * 6)}@{after}"
-        else:
+        elif self.two_factor_type == 'SMS':
             return f"{('*' * 6)}{self.target[-4:]}"
+        return "Authenticator Application"
 
 
 class Form(models.Model):
