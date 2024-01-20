@@ -33,6 +33,13 @@ class DeleteTwoFactorState(str, enum.Enum):
     FAILED = "FAILED"
 
 
+class TwoFactorSaveState(str, enum.Enum):
+    SUCCESS = "SUCCESS"
+    SMS_NOT_ENABLED = "SMS_NOT_ENABLED"
+    CODE_INCORRECT = "CODE_INCORRECT"
+    CANNOT_UPDATE = "CANNOT_UPDATE"
+
+
 class ChangePasswordState(str, enum.Enum):
     SUCCESS = "SUCCESS"
     CURRENT_PASSWORD_INCORRECT = "CURRENT_PASSWORD_INCORRECT"
@@ -72,6 +79,7 @@ class TwoFactor(Schema):
     twoFactorType: TwoFactorType = None
     active: bool = None
     code: str = None
+    state: TwoFactorSaveState = None
 
 
 class DeleteTwoFactorResponse(Schema):

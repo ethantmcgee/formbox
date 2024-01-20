@@ -27,6 +27,13 @@ export enum TwoFactorType {
   EMAIL = 'EMAIL'
 }
 
+export enum TwoFactorSaveState {
+  SUCCESS = "SUCCESS",
+  SMS_NOT_ENABLED = "SMS_NOT_ENABLED",
+  CODE_INCORRECT = "CODE_INCORRECT",
+  CANNOT_UPDATE = "CANNOT_UPDATE"
+}
+
 export class LoginResponse {
   state: AuthenticationState | null = null;
   passwordResetToken: string | null = null;
@@ -57,6 +64,7 @@ export class ChangePasswordResponse {
 }
 
 export class TwoFactorOption {
+  state: TwoFactorSaveState | null = null;
   id: number | null = null;
   nickname: string | null = null;
   twoFactorType: TwoFactorType | null = null;

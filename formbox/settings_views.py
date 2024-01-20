@@ -1,13 +1,13 @@
-from http.client import HTTPException
+from os import getenv
 from typing import List
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.views.decorators.cache import never_cache
 from ninja import Router
 from ninja_jwt.authentication import JWTAuth
 
+from formbox.mfa import send_mfa, validate_mfa
 from formbox.models import TwoFactorOption
 from formbox.settings_api import *
 
@@ -77,25 +77,36 @@ def password_change(request):
 
 
 @never_cache
-@router.get("/save-mfa", response=TwoFactor, auth=JWTAuth())
+@router.post("/save-mfa", response=TwoFactor, auth=JWTAuth())
 def password_change(request, data: TwoFactor):
     # only new or inactive mfa options can be saved, active options
     # must be deleted and added again
     option = TwoFactorOption()
-    if data.id:
+    if data.id > 0:
         option = TwoFactorOption.objects.get(id=data.id,active=False)
-        if option is None: return HttpResponse('Unauthorized', status=401)
+        if not option:
+            return {
+                "state": TwoFactorSaveState.CANNOT_UPDATE
+            }
     option.nickname = data.nickname
     option.two_factor_type = data.twoFactorType
+    if data.twoFactorType == TwoFactorType.SMS and not bool(getenv("SMS_ENABLED")):
+        return {
+            "state": TwoFactorSaveState.SMS_NOT_ENABLED
+        }
     option.secret = data.secret
     option.target = data.target
     option.active = data.active
-    if data.active and data.code:
-        pass # validate that code is correct before we save
-    elif not data.active and data.code:
-        option.code = data.code # save code and code to user
+    if data.code:
+        if not validate_mfa(request.user, option, data.code):
+            return {
+                "state": TwoFactorSaveState.CODE_INCORRECT
+            }
+    elif not data.active:
+        send_mfa(request.user, option)
     option.save()
     return {
+        "state": TwoFactorSaveState.SUCCESS,
         "id": option.id,
         "nickname": option.nickname,
         "twoFactorType": option.two_factor_type,
@@ -106,7 +117,7 @@ def password_change(request, data: TwoFactor):
 
 
 @never_cache
-@router.get("/delete-mfa", response=DeleteTwoFactorResponse, auth=JWTAuth())
+@router.post("/delete-mfa", response=DeleteTwoFactorResponse, auth=JWTAuth())
 def password_change(request, data: TwoFactor):
     TwoFactorOption.objects.filter(id=data.id).delete()
     return {"state": DeleteTwoFactorState.SUCCESS}
