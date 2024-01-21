@@ -125,6 +125,8 @@ Or you can try the latest beta version with:
 docker-compose -f docker-compose.yml -f docker-compose-local.yml up
 ```
 
+> No matter how you try, your emails will be sent to [http://localhost:1080](http://localhost:1080)
+
 ## Repository Contents
 
 - `mysite` - contains settings and configuration for Django project
