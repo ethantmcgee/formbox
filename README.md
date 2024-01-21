@@ -31,6 +31,7 @@ spam protection.
 - Bring Your Own SMTP
 - Twilio Integration
 - MFA
+- hCaptcha / Re-Captcha Integration
 
 ## Setup
 
@@ -44,6 +45,9 @@ in the sample below).
 |---------------------------------|-----------------------------------------------|-----------------|-------------------------------------|
 | POSTGRES_USERNAME / DB_USERNAME | Username for the database                     | *any*           | username                            |
 | POSTGRES_PASSWORD / DB_PASSWORD | Password for the database                     | *any*           | password                            |
+| DB_HOST                         | Host of the database server                   | *any*           | db.host.com                         |
+| DB_PORT                         | Port of the database server                   | *any*           | 5432                                |
+| DB_NAME                         | Name of database on database server           | *any*           | formbox                             |
 | SMTP_HOST                       | Host for SMTP server                          | *any*           | smtp.mailgun.org                    |
 | SMTP_PORT                       | Port for SMTP server                          | *any*           | 587                                 |
 | SMTP_TLS_ENABLED                | Whether to enable TLS in SMTP communication   | *True*, *False* | True                                |
@@ -105,6 +109,21 @@ and entering the default username / password of `admin` / `admin`.
 This should be changed at first opportunity.  We also recommend each
 user enable MFA (TOTP preferred) if this system will be hosted in a
 publically accessible way.
+
+## Trying Out
+
+There are two ways to try FormBox.  You can either try the latest release
+by cloning the repository then running:
+
+```
+docker-compose -f docker-compose.yml -f docker-compose-prod.yml up
+```
+
+Or you can try the latest beta version with:
+
+```
+docker-compose -f docker-compose.yml -f docker-compose-local.yml up
+```
 
 ## Repository Contents
 
