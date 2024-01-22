@@ -56,7 +56,7 @@ export default function MFAForm({ goToTable }: Properties) {
         toast.error(data.state);
       }
     })
-  }, []);
+  }, [token, getValues]);
 
   const onSubmit = useCallback((data: any) => {
     post<TwoFactorOption>('/api/settings/save-mfa', {
@@ -75,7 +75,7 @@ export default function MFAForm({ goToTable }: Properties) {
         toast.error(data.state);
       }
     })
-  }, []);
+  }, [token, goToTable]);
 
   const type = watch("twoFactorType");
   useEffect(() => {
@@ -182,7 +182,7 @@ export default function MFAForm({ goToTable }: Properties) {
         </div>
       );
     }
-  }, [type, secret])
+  }, [type, secret, errors.code?.message, errors.target?.message, register, sendCode, setValue])
 
   return (
     <>

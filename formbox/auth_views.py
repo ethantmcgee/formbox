@@ -1,9 +1,13 @@
+import datetime
+
 from django.contrib.auth import authenticate
 from django.views.decorators.cache import never_cache
 from ninja import Router
 from ninja_jwt.tokens import RefreshToken
+from uuid import uuid4
 
 from formbox.auth_api import *
+from formbox.models import TwoFactorOption
 
 router = Router()
 
@@ -27,16 +31,34 @@ def request_password_change(request, data: ChangePasswordResponse):
 def login(request, data: LoginRequest):
     user = authenticate(username=data.username, password=data.password)
     if user:
-        tokens = get_tokens_for_user(user)
-        return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
+        if TwoFactorOption.objects.filter(user=user).exists():
+            user.authsetting.two_factor_auth_token = str(uuid4())
+            user.authsetting.two_factor_auth_token_created = datetime.datetime.now()
+            user.save()
+            return {"state": AuthenticationState.MFA_NEEDED, "twoFactorAuthToken": user.authsetting.two_factor_auth_token}
+        elif user.authsetting.needs_password_change:
+            user.authsetting.password_reset_token = str(uuid4())
+            user.authsetting.password_reset_token_created = datetime.datetime.now()
+            user.save()
+            return {"state": AuthenticationState.PASSWORD_CHANGE_REQUIRED, "passwordResetToken": user.authsetting.password_reset_token}
+        else:
+            tokens = get_tokens_for_user(user)
+            return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
     else:
         return {"state": AuthenticationState.FAILED}
 
 
 @never_cache
-@router.post("/get-mfa-options", response=GetMFAOptionsResponse)
+@router.post("/get-mfa-options", response=List[MFAOption])
 def get_mfa_options(request, data: GetMFAOptionsRequest):
-    pass
+
+    options = TwoFactorOption.objects.filter(user=request.user, active=True).all()
+    return [{
+        "id": option.id,
+        "nickname": option.nickname,
+        "twoFactorType": option.two_factor_type,
+        "target": option.get_masked_target()
+    } for option in options]
 
 
 @never_cache

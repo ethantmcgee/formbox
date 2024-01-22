@@ -29,6 +29,7 @@ TWO_FACTOR_TYPE = [
 
 class AuthSetting(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    needs_password_change = models.BooleanField(default=False)
     password_reset_token = models.CharField(max_length=255, null=True)
     password_reset_token_created = models.DateTimeField(null=True)
     two_factor_auth_token = models.CharField(max_length=255, null=True)

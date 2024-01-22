@@ -35,19 +35,15 @@ class GetMFAOptionsRequest(Schema):
 
 
 class MFAOption(Schema):
+    id: int = None
     type: MFAType = None
     nickname: str = None
-    code: str = None
     preview: str = None
-
-
-class GetMFAOptionsResponse(Schema):
-    options: List[MFAOption] = None
 
 
 class StartMFARequest(Schema):
     twoFactorAuthToken: str = None
-    twoFactorMethod: str = None
+    twoFactorMethod: int = None
 
 
 class StartMFAResponse(Schema):

@@ -1,24 +1,14 @@
-import {useEffect, useState, useCallback} from 'react'
-import {toast} from 'react-toastify';
-import {useDispatch, useSelector} from 'react-redux'
-import {useNavigate} from 'react-router'
-import {selectToken, setAuthToken, setRefreshToken} from '../features/auth/authSlice'
-import {post} from '../authenticated-fetch'
-import {AuthenticationState, LoginResponse} from '../types'
+import {useEffect, useState} from 'react'
 import logo from '../assets/img/logo.png'
 import UsernamePassword from '../components/login/UsernamePassword'
 import ForgotPassword from '../components/login/ForgotPassword'
+import Mfa from '../components/login/MFA'
 
 export default function Login() {
-  const token = useSelector(selectToken)
-
   const USERNAME_PASSWORD = 0;
   const FORGOT_PASSWORD = 1;
   const MFA = 2;
   const CHANGE_PASSWORD = 3;
-
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const goHome = () => {
     setPage(USERNAME_PASSWORD);
@@ -28,47 +18,30 @@ export default function Login() {
     setPage(FORGOT_PASSWORD);
   }
 
-  const goToMFA = () => {
+  const goToMFA = (mfaCode: string) => {
+    setMfaCode(mfaCode);
     setPage(MFA);
   }
 
-  const goToChangePassword = () => {
+  const goToChangePassword = (passwordChangeCode: string) => {
     setPage(CHANGE_PASSWORD);
   }
 
-  const sendUsernamePassword = useCallback((username: string, password: string) => {
-    post<LoginResponse>("/api/auth/login",{
-      username,
-      password
-    }, token).then((data) => {
-      if(data.state === AuthenticationState.SUCCESS) {
-        dispatch(setAuthToken(data.authToken))
-        dispatch(setRefreshToken(data.refreshToken))
-        navigate("/")
-      } else if(data.state === AuthenticationState.MFA_NEEDED) {
-        // moar auth needed
-        goToMFA();
-      } else if(data.state === AuthenticationState.PASSWORD_CHANGE_REQUIRED) {
-        // moar auth needed
-        goToChangePassword();
-      } else {
-        toast.error("Login failed. Please try again");
-      }
-    });
-  }, [dispatch, navigate, token]);
-
   const [page, setPage] = useState(USERNAME_PASSWORD);
-  const [form, setForm] = useState(<UsernamePassword goToForgotPassword={goToForgotPassword} sendUsernamePassword={sendUsernamePassword} />);
+  const [form, setForm] = useState(<UsernamePassword goToForgotPassword={goToForgotPassword} goToMFA={goToMFA} goToChangePassword={goToChangePassword} />);
+  const [mfaCode, setMfaCode] = useState('');
 
   useEffect(() => {
     if(page === USERNAME_PASSWORD) {
-      setForm(<UsernamePassword goToForgotPassword={goToForgotPassword} sendUsernamePassword={sendUsernamePassword} />)
+      setForm(<UsernamePassword goToForgotPassword={goToForgotPassword} goToMFA={goToMFA} goToChangePassword={goToChangePassword} />)
     } else if(page === FORGOT_PASSWORD) {
       setForm(<ForgotPassword goHome={goHome} />)
+    } else if(page === MFA) {
+      setForm(<Mfa mfaCode={mfaCode} goHome={goHome} goToChangePassword={goToChangePassword} />)
     } else {
       setForm(<></>)
     }
-  }, [page, setForm, sendUsernamePassword])
+  }, [page, setForm, mfaCode])
 
   return (
     <>

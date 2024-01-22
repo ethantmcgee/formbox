@@ -1,11 +1,18 @@
 import { useCallback } from 'react';
+import {toast} from 'react-toastify';
+import {useDispatch, useSelector} from 'react-redux'
+import {useNavigate} from 'react-router'
+import {selectToken, setAuthToken, setRefreshToken} from '../../features/auth/authSlice'
+import {post} from '../../authenticated-fetch'
+import {AuthenticationState, LoginResponse} from '../../types'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
 type Properties = {
-  goToForgotPassword: () => void
-  sendUsernamePassword: (arg0: string, arg1: string) => void
+  goToForgotPassword: () => void,
+  goToMFA: (arg0: string) => void,
+  goToChangePassword: (arg0: string) => void
 }
 
 const schema = yup.object({
@@ -13,14 +20,33 @@ const schema = yup.object({
   password: yup.string().required()
 }).required();
 
-export default function UsernamePassword({ goToForgotPassword, sendUsernamePassword }: Properties) {
+export default function UsernamePassword({ goToForgotPassword, goToMFA, goToChangePassword }: Properties) {
+  const token = useSelector(selectToken)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const { register, handleSubmit, formState:{ errors } } = useForm({
     resolver: yupResolver(schema)
   });
   
   const onSubmit = useCallback((data: { username: string, password: string }) => {
-    sendUsernamePassword(data.username, data.password);
-  }, [sendUsernamePassword]);
+    post<LoginResponse>("/api/auth/login",{
+      username: data.username,
+      password: data.password
+    }, token).then((resp) => {
+      if(resp.state === AuthenticationState.SUCCESS) {
+        dispatch(setAuthToken(resp.authToken))
+        dispatch(setRefreshToken(resp.refreshToken))
+        navigate("/")
+      } else if(resp.state === AuthenticationState.MFA_NEEDED) {
+        goToMFA(resp.twoFactorAuthToken || '');
+      } else if(resp.state === AuthenticationState.PASSWORD_CHANGE_REQUIRED) {
+        goToChangePassword(resp.passwordResetToken || '');
+      } else {
+        toast.error("Login failed. Please try again");
+      }
+    });
+    }, [dispatch, goToChangePassword, goToMFA, navigate, token]);
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>

@@ -62,7 +62,7 @@ export default function ManageMFA({ goToAdd, goToDelete }: Properties) {
                 <tbody className="divide-y divide-gray-200">
                   {(mfaOptions).map((mfaOption) => {
                     return (
-                      <tr>
+                      <tr key={mfaOption.id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                           {mfaOption.nickname}
                         </td>

@@ -11,11 +11,11 @@ import {toast} from 'react-toastify';
 const schema = yup.object({
   currentPassword: yup.string().required(),
   newPassword: yup.string().test(
-    'has-number', '${path} must contain one number', (value, context) => /\d/.test(value || '')
+    'has-number', 'New Password must contain one number', (value, context) => /\d/.test(value || '')
   ).test(
-    'has-letter', '${path} must contain one letter', (value, context) => /[a-zA-Z]/.test(value || '')
+    'has-letter', 'New Password must contain one letter', (value, context) => /[a-zA-Z]/.test(value || '')
   ).test(
-    'long-enough', '${path} must contain 12 characters', (value, context) => (value || '').length >= 12
+    'long-enough', 'New Password must contain 12 characters', (value, context) => (value || '').length >= 12
   ).required(),
   confirmPassword: yup.string().oneOf([yup.ref('newPassword')], "Confirm password doesn't match").required()
 }).required();
