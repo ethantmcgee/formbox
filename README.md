@@ -98,6 +98,7 @@ services:
       HOST: ???
       CORS_HOSTS: ???
       SECRET_KEY: ???
+      DEBUG: False
     ports:
       - "80:80"
 volumes:
