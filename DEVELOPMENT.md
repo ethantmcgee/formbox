@@ -46,7 +46,7 @@ The frontend should now start on [http://localhost:3000](http://localhost:3000)
 
 ## Notes
 
-To make local development easier, a nginx container that emulates production
-runtimes is loaded but the docker command in the backend notes.  This setup
+To make local development easier, a nginx container that emulates the production
+runtime is loaded by the docker command in the backend notes.  This setup
 allows you to access both frontend and backend via [http://localhost](http://localhost)
 over port 80.
