@@ -1,23 +1,33 @@
 FROM node:18-alpine as builder
 
-COPY frontend/ /app
+COPY frontend/ /frontend
 
-WORKDIR /app
+WORKDIR /frontend
 
-RUN npm clean install
+RUN npm install
 RUN npm run build
 
-FROM python:3-alpine as runner
+FROM nginx:alpine as runner
 
-RUN apk add nginx
+RUN apk add py3-pip
 
-COPY formbox/ /app
-COPY mysite/ /app
-COPY manage.py /app
-COPY requirements.txt /app
+COPY --from=builder /frontend/build /frontend
 
-WORKDIR /app
+COPY formbox/ /backend/formbox
+COPY mysite/ /backend/mysite
+COPY manage.py /backend
+COPY requirements.txt /backend
+
+COPY start.sh /start.sh
+
+COPY default-prod.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /backend
 
 RUN pip3 install -r requirements.txt
 
-CMD python3 manage.py migrate && python3 manage.py loadsampledata && python3 manage.py runserver 0.0.0.0:8000
+WORKDIR /
+
+RUN chmod +x start.sh
+
+CMD /start.sh

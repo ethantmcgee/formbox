@@ -2,7 +2,7 @@ import pyotp
 
 from django.contrib.auth.models import User
 
-from formbox.email import send_email
+from formbox.mail import send_email
 from formbox.models import TwoFactorOption
 from formbox.settings_api import TwoFactorType
 from formbox.twilio import start_verification, check_verification

@@ -122,7 +122,7 @@ docker-compose -f docker-compose.yml -f docker-compose-prod.yml up
 Or you can try the latest beta version with:
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose-local.yml up
+docker-compose -f docker-compose.yml -f docker-compose-beta.yml up
 ```
 
 > No matter how you try, your emails will be sent to [http://localhost:1080](http://localhost:1080)
@@ -138,7 +138,9 @@ docker-compose -f docker-compose.yml -f docker-compose-local.yml up
 
 This repository accepts community contributions. Please see our 
 [Contribution Guidelines](CONTRIBUTING.md). Please abide by our 
-[Code of Conduct](CODE_OF_CONDUCT.md) in all issues and discussions.
+[Code of Conduct](CODE_OF_CONDUCT.md) in all issues and discussions.  See our
+[Development Guide](DEVELOPMENT.md) for more information about
+getting setup.
 
 ## License
 

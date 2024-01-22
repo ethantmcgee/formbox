@@ -1,20 +1,8 @@
 version: '3'
 services:
-  app:
-    build: .
-    environment:
-      DB_USERNAME: user
-      DB_PASSWORD: password
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: formbox
-      SMTP_HOST: mailcatcher
-      SMTP_PORT: 1025
-      SMTP_TLS_ENABLED: False
-      SMTP_FROM: no-reply@formbox.dev
-      SMS_ENABLED: False
-      HOST: localhost
-      CORS_HOSTS: localhost
-      SECRET_KEY: secret
+  nginx:
+    image: nginx:1.21-alpine
     ports:
       - 80:80
+    volumes:
+      - ./default-local.conf:/etc/nginx/conf.d/default.conf
