@@ -1,14 +1,11 @@
 import React from 'react';
 import AuthGuard from '../components/AuthGuard'
+import ManageUsers from '../components/user/ManageUsers'
 
 export default function Users() {
   return (
     <AuthGuard>
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-bold underline">
-          Users
-        </h1>
-      </div>
+      <ManageUsers />
     </AuthGuard>
     );
 }

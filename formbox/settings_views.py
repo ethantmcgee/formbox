@@ -65,7 +65,7 @@ def password_change(request, data: ChangePasswordRequest):
 
 
 @never_cache
-@router.get("/mfa-options", response=List[TwoFactor], auth=JWTAuth())
+@router.get("/mfa", response=List[TwoFactor], auth=JWTAuth())
 def password_change(request):
     options = TwoFactorOption.objects.filter(user=request.user, active=True).all()
     return [{
@@ -77,7 +77,7 @@ def password_change(request):
 
 
 @never_cache
-@router.post("/save-mfa", response=TwoFactor, auth=JWTAuth())
+@router.put("/mfa", response=TwoFactor, auth=JWTAuth())
 def password_change(request, data: TwoFactor):
     # only new or inactive mfa options can be saved, active options
     # must be deleted and added again
@@ -118,7 +118,7 @@ def password_change(request, data: TwoFactor):
 
 
 @never_cache
-@router.post("/delete-mfa", response=DeleteTwoFactorResponse, auth=JWTAuth())
+@router.delete("/mfa", response=DeleteTwoFactorResponse, auth=JWTAuth())
 def password_change(request, data: TwoFactor):
     TwoFactorOption.objects.filter(id=data.id).delete()
     return {"state": DeleteTwoFactorState.SUCCESS}

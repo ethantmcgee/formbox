@@ -4,6 +4,7 @@ from ninja import Schema
 
 
 class GetUserResponse(Schema):
+    id: int = None
     username: str = None
     email: str = None
 

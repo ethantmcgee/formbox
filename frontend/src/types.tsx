@@ -87,3 +87,14 @@ export class MFAOption {
 export class DeleteTwoFactorResponse {
   state: DeleteTwoFactorState | null = null;
 }
+
+export class ApiUser {
+  id: number | null = null;
+  username: string | null = null;
+  email: string | null = null;
+}
+
+export class PageableApiUser {
+  total: number | null = null;
+  results: ApiUser[] = [];
+}

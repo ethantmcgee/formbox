@@ -14,7 +14,7 @@ export default function ManageMFA({ goToAdd, goToDelete }: Properties) {
   const [mfaOptions, setMfaOptions] = useState([] as TwoFactorOption[]);
   
   useEffect(() => {
-    get<TwoFactorOption[]>('/api/settings/mfa-options', token).then((data) => {
+    get<TwoFactorOption[]>('/api/settings/mfa', token).then((data) => {
       setMfaOptions(data)
     })
   }, [token])

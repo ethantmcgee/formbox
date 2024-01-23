@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import { TwoFactorOption, TwoFactorSaveState } from '../../types';
-import { post } from '../../authenticated-fetch'
+import { put } from '../../authenticated-fetch'
 import QRCode from "react-qr-code";
 import {toast} from 'react-toastify';
 // @ts-ignore
@@ -42,7 +42,7 @@ export default function MFAForm({ goToTable }: Properties) {
   const [code, setCode] = useState(<></>);
 
   const sendCode = useCallback(() => {
-    post<TwoFactorOption>('/api/settings/save-mfa', {
+    put<TwoFactorOption>('/api/settings/mfa', {
       id: getValues("id"),
       secret: getValues("secret"),
       nickname: getValues("nickname"),
@@ -59,7 +59,7 @@ export default function MFAForm({ goToTable }: Properties) {
   }, [token, getValues]);
 
   const onSubmit = useCallback((data: any) => {
-    post<TwoFactorOption>('/api/settings/save-mfa', {
+    put<TwoFactorOption>('/api/settings/mfa', {
       id: data.id,
       secret: data.secret,
       nickname: data.nickname,
