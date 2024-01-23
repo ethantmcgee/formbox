@@ -17,7 +17,7 @@ export default function Login() {
   const goHome = useCallback(() => {
     setSearchParams({});
     setPage(USERNAME_PASSWORD);
-    }, [setSearchParams])
+  }, [setSearchParams])
 
   const goToForgotPassword = () => {
     setPage(FORGOT_PASSWORD);

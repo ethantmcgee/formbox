@@ -34,8 +34,6 @@ class AuthSetting(models.Model):
     password_reset_token_created = models.DateTimeField(null=True)
     two_factor_auth_token = models.CharField(max_length=255, null=True)
     two_factor_auth_token_created = models.DateTimeField(null=True)
-    invite_token = models.CharField(max_length=255, null=True)
-    invite_token_created = models.DateTimeField(null=True)
 
 
 @receiver(post_save, sender=User)
