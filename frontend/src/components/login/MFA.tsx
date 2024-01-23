@@ -49,6 +49,8 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
         navigate("/")
       } else if(resp.state === AuthenticationState.PASSWORD_CHANGE_REQUIRED) {
         goToChangePassword(resp.passwordResetToken || '');
+      } else {
+        toast.error(resp.state);
       }
     });
   }, [dispatch, goToChangePassword, mfaCode, navigate, token]);
@@ -61,11 +63,10 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
       if(data.state === AuthenticationState.SUCCESS) {
         toast.success("Code Sent");
       } else {
-        toast.success(data.state);
-        goHome();
+        toast.error(data.state);
       }
     });
-  }, [getValues, goHome, mfaCode, token]);
+  }, [getValues, mfaCode, token]);
 
   useEffect(() => {
     post<MFAOption[]>("/api/auth/get-mfa-options", {
@@ -126,7 +127,7 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
         <button
           type="button"
           className="w-1/3 rounded-md bg-indigo-600 px-3 py-1.5 mr-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={(e) => {e.preventDefault(); goHome()}}
+          onClick={() => goHome()}
           >
           Back
         </button>

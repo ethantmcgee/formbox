@@ -62,7 +62,6 @@ class StartChangePasswordRequest(Schema):
 
 class CompleteChangePasswordRequest(Schema):
     passwordResetToken: str = None
-    currentPassword: str = None
     newPassword: str = None
 
 

@@ -2,6 +2,11 @@ import { useCallback } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import {useSelector} from 'react-redux'
+import {selectToken} from '../../features/auth/authSlice'
+import {post} from '../../authenticated-fetch'
+import {AuthenticationState, LoginResponse} from '../../types'
+import {toast} from 'react-toastify';
 
 type Properties = {
   goHome: () => void
@@ -12,13 +17,24 @@ const schema = yup.object({
 }).required();
 
 export default function ForgotPassword({ goHome }: Properties) {
+  const token = useSelector(selectToken)
+
   const { register, handleSubmit, formState:{ errors } } = useForm({
     resolver: yupResolver(schema)
   });
 
   const onSubmit = useCallback((data: { email: string }) => {
-    
-  }, []);
+    post<LoginResponse>('/api/auth/request-password-change', {
+      email: data.email
+    }, token).then((data) => {
+      if(data.state === AuthenticationState.SUCCESS) {
+        toast.success("If an account with this email exists, you'll get an email.")
+        goHome()
+      } else {
+        toast.error(data.state);
+      }
+    })
+  }, [goHome, token]);
   
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -42,7 +58,7 @@ export default function ForgotPassword({ goHome }: Properties) {
         <button
           type="button"
           className="w-1/3 rounded-md bg-indigo-600 px-3 py-1.5 mr-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={(e) => {e.preventDefault(); goHome()}}
+          onClick={() => goHome()}
           >
           Back
         </button>
