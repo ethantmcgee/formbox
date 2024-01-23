@@ -51,7 +51,7 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
         goToChangePassword(resp.passwordResetToken || '');
       }
     });
-  }, []);
+  }, [dispatch, goToChangePassword, mfaCode, navigate, token]);
 
   const sendCode = useCallback(() => {
     post<LoginResponse>("/api/auth/start-mfa", {
@@ -65,7 +65,7 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
         goHome();
       }
     });
-  }, []);
+  }, [getValues, goHome, mfaCode, token]);
 
   useEffect(() => {
     post<MFAOption[]>("/api/auth/get-mfa-options", {
@@ -73,7 +73,7 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
     }, token).then((data) => {
       setMfaMethods(data);
     });
-  }, []);
+  }, [mfaCode, token]);
   
   const selected = getSelectedOption(watch("method"));
   const showSendCode = selected?.type === 'EMAIL' || selected?.type === 'SMS' ? (
