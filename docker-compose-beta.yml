@@ -14,6 +14,7 @@ services:
       SMTP_FROM: no-reply@formbox.dev
       SMS_ENABLED: False
       HOST: localhost
+      HOST_PROTOCOL: http
       CORS_HOSTS: localhost
       SECRET_KEY: secret
     ports:

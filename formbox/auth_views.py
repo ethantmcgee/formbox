@@ -34,7 +34,7 @@ def request_password_change(request, data: ChangePasswordRequest):
         user.authsetting.password_reset_token = str(uuid4())
         user.authsetting.password_reset_token_created = timezone.now()
         user.save()
-        send_email(user.email, "Password Reset Code", f"Please reset your password by visiting: {getenv('HOST')}/login?passwordChangeCode={user.authsetting.password_reset_token}.  This token is only valid for 5 minutes.")
+        send_email(user.email, "Password Reset Code", f"Please reset your password by visiting: {getenv('HOST_PROTOCOL')}://{getenv('HOST')}/login?passwordChangeCode={user.authsetting.password_reset_token}.  This token is only valid for 5 minutes.")
     except User.DoesNotExist:
         pass
     return {"state": AuthenticationState.SUCCESS}

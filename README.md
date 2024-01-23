@@ -59,6 +59,7 @@ in the sample below).
 | TWILIO_SID                      | SID of Twilio Account                         | *any*           | AC2XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  |
 | TWILIO_AUTH_KEY                 | Twilio Auth Key                               | *any*           | 912XXXXXXXXXXXXXXXXXXXXXXXXXXXXX    |
 | HOST                            | Host at which formbox is hosted               | *any*           | app.formbox.dev                     |
+| HOST_PROTOCOL                   | Protocol used to host Formbox                 | *http*, *https* | https                               |
 | CORS_HOSTS                      | Hosts to allow submissions from               | *any*           | site1.formbox.dev,site2.formbox.dev |
 | SECRET_KEY                      | Used to hash passwords and secure secret data | *any*           | um8XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX |
 
@@ -96,6 +97,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       HOST: ???
+      HOST_PROTOCOL: ???
       CORS_HOSTS: ???
       SECRET_KEY: ???
       DEBUG: False
