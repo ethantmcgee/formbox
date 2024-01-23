@@ -52,7 +52,7 @@ class StartMFAResponse(Schema):
 
 class CompleteMFARequest(Schema):
     twoFactorAuthToken: str = None
-    twoFactorMethod: str = None
+    twoFactorMethod: int = None
     code: str = None
 
 

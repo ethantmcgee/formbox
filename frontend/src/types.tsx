@@ -77,6 +77,13 @@ export class TwoFactorOption {
   code: string | null = null;
 }
 
+export class MFAOption {
+  id: number | null = null;
+  nickname: string | null = null;
+  type: TwoFactorType | null = null;
+  preview: string | null = null;
+}
+
 export class DeleteTwoFactorResponse {
   state: DeleteTwoFactorState | null = null;
 }

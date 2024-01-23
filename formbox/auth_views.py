@@ -1,4 +1,7 @@
-import datetime
+from datetime import timedelta
+
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 from django.contrib.auth import authenticate
 from django.views.decorators.cache import never_cache
@@ -7,6 +10,7 @@ from ninja_jwt.tokens import RefreshToken
 from uuid import uuid4
 
 from formbox.auth_api import *
+from formbox.mfa import send_mfa, validate_mfa
 from formbox.models import TwoFactorOption
 
 router = Router()
@@ -33,12 +37,12 @@ def login(request, data: LoginRequest):
     if user:
         if TwoFactorOption.objects.filter(user=user).exists():
             user.authsetting.two_factor_auth_token = str(uuid4())
-            user.authsetting.two_factor_auth_token_created = datetime.datetime.now()
+            user.authsetting.two_factor_auth_token_created = timezone.now()
             user.save()
             return {"state": AuthenticationState.MFA_NEEDED, "twoFactorAuthToken": user.authsetting.two_factor_auth_token}
         elif user.authsetting.needs_password_change:
             user.authsetting.password_reset_token = str(uuid4())
-            user.authsetting.password_reset_token_created = datetime.datetime.now()
+            user.authsetting.password_reset_token_created = timezone.now()
             user.save()
             return {"state": AuthenticationState.PASSWORD_CHANGE_REQUIRED, "passwordResetToken": user.authsetting.password_reset_token}
         else:
@@ -51,26 +55,40 @@ def login(request, data: LoginRequest):
 @never_cache
 @router.post("/get-mfa-options", response=List[MFAOption])
 def get_mfa_options(request, data: GetMFAOptionsRequest):
-
-    options = TwoFactorOption.objects.filter(user=request.user, active=True).all()
+    two_minutes_ago = timezone.now() - timedelta(minutes=2)
+    user = User.objects.get(authsetting__two_factor_auth_token=data.twoFactorAuthToken, authsetting__two_factor_auth_token_created__gte=two_minutes_ago)
+    options = TwoFactorOption.objects.filter(user=user, active=True).all()
     return [{
         "id": option.id,
         "nickname": option.nickname,
-        "twoFactorType": option.two_factor_type,
-        "target": option.get_masked_target()
+        "type": option.two_factor_type,
+        "preview": option.get_masked_target()
     } for option in options]
 
 
 @never_cache
 @router.post("/start-mfa", response=StartMFAResponse)
 def start_mfa(request, data: StartMFARequest):
-    pass
+    two_minutes_ago = timezone.now() - timedelta(minutes=2)
+    user = User.objects.filter(authsetting__two_factor_auth_token=data.twoFactorAuthToken, authsetting__two_factor_auth_token_created__gte=two_minutes_ago)
+    if user.exists():
+        option = TwoFactorOption.objects.filter(user=user.get(), active=True, id=data.twoFactorMethod).get()
+        send_mfa(option)
+        return {"state": AuthenticationState.SUCCESS}
+    return {"state": AuthenticationState.FAILED}
 
 
 @never_cache
 @router.post("/complete-mfa", response=LoginResponse)
 def complete_mfa(request, data: CompleteMFARequest):
-    pass
+    two_minutes_ago = timezone.now() - timedelta(minutes=2)
+    user = User.objects.filter(authsetting__two_factor_auth_token=data.twoFactorAuthToken, authsetting__two_factor_auth_token_created__gte=two_minutes_ago)
+    if user.exists():
+        option = TwoFactorOption.objects.filter(user=user.get(), active=True, id=data.twoFactorMethod).get()
+        if validate_mfa(option, data.code):
+            tokens = get_tokens_for_user(user.get())
+            return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
+    return {"state": AuthenticationState.FAILED}
 
 
 @never_cache
