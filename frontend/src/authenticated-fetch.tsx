@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify'
+import {toast} from 'react-toastify'
 
 function sendData<T>(method: string, url: string, body: any, token: string | null): Promise<T> {
   return new Promise<T>((resolve, reject) => {

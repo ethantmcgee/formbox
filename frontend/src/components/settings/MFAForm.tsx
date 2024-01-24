@@ -1,11 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
+import {useState, useCallback, useEffect} from 'react';
+import {useForm} from "react-hook-form";
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
-import { TwoFactorOption, TwoFactorSaveState } from '../../types';
-import { put } from '../../authenticated-fetch'
+import {TwoFactorOption, TwoFactorSaveState} from '../../types';
+import {put} from '../../authenticated-fetch'
 import QRCode from "react-qr-code";
 import {toast} from 'react-toastify';
 // @ts-ignore

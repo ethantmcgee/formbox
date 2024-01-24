@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router'
-import { logout } from '../features/auth/authSlice'
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux'
+import {useNavigate} from 'react-router'
+import {logout} from '../features/auth/authSlice'
 import AuthGuard from '../components/AuthGuard'
 
 export default function Logout() {

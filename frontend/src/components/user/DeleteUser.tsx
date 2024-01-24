@@ -1,8 +1,8 @@
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
-import {post} from '../../authenticated-fetch'
+import {del} from '../../authenticated-fetch'
 import {toast} from 'react-toastify';
-import { ApiUser } from '../../types';
+import {ApiUser} from '../../types';
 
 type Properties = {
   goToTable: () => void,
@@ -13,7 +13,7 @@ export default function DefaultUser({ goToTable, userToBeDeleted }: Properties) 
   const token = useSelector(selectToken)
 
   const doDelete = () => {
-    post<ApiUser>('/api/users', userToBeDeleted, token).then((data) => {
+    del<ApiUser>('/api/users/', userToBeDeleted, token).then((data) => {
       toast.success("User Deleted")
       goToTable()
     })

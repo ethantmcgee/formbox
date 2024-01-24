@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
-import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
+import {useCallback} from 'react';
+import {useForm} from "react-hook-form";
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'

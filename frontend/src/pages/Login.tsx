@@ -4,7 +4,7 @@ import UsernamePassword from '../components/login/UsernamePassword'
 import ForgotPassword from '../components/login/ForgotPassword'
 import Mfa from '../components/login/MFA'
 import ChangePassword from '../components/login/ChangePassword'
-import { useSearchParams } from 'react-router-dom';
+import {useSearchParams} from 'react-router-dom';
 
 export default function Login() {
   const [searchParams, setSearchParams] = useSearchParams();

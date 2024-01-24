@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
+import {useCallback} from 'react';
 import {toast} from 'react-toastify';
 import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate} from 'react-router'
 import {selectToken, setAuthToken, setRefreshToken} from '../../features/auth/authSlice'
 import {post} from '../../authenticated-fetch'
 import {AuthenticationState, LoginResponse} from '../../types'
-import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
+import {useForm} from "react-hook-form";
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
 type Properties = {

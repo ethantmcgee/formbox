@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ApiUser } from '../../types';
+import {useState, useEffect} from 'react';
+import {ApiUser} from '../../types';
 import UserForm from './UserForm';
 import UsersTable from './UsersTable';
 import DeleteUser from './DeleteUser';

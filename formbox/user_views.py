@@ -52,7 +52,7 @@ def create_user(request, data: ApiUser):
     user.authsetting.password_reset_token = str(uuid4())
     user.authsetting.password_reset_token_created = timezone.now()
     user.save()
-    send_email(user.email, "Password Reset Code", f"Welcome to Formbox!  You can set your password here: {getenv('HOST_PROTOCOL')}://{getenv('HOST')}/login?passwordChangeCode={user.authsetting.password_reset_token}.  This token is only valid for 5 minutes.")
+    send_email(user.email, "Welcome to Formbox!", f"Welcome to Formbox!  You can set your password here: {getenv('HOST_PROTOCOL')}://{getenv('HOST')}/login?passwordChangeCode={user.authsetting.password_reset_token}.  This token is only valid for 5 minutes.")
     return {"id": user.id, "email": user.email, "username": user.username}
 
 
@@ -69,5 +69,5 @@ def update_user(request, data: ApiUser):
 @never_cache
 @router.delete("/", response=bool, auth=JWTAuth())
 def update_user(request, data: ApiUser):
-    User.objects.get(id=id).delete()
+    User.objects.get(id=data.id).delete()
     return True

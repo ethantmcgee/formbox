@@ -1,10 +1,10 @@
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
-import { ToastContainer } from 'react-toastify';
-import { Outlet } from "react-router-dom";
-import { useSelector } from 'react-redux'
-import { selectToken } from '../features/auth/authSlice'
+import {Fragment} from 'react'
+import {Disclosure, Menu, Transition} from '@headlessui/react'
+import {Bars3Icon, XMarkIcon, UserCircleIcon} from '@heroicons/react/24/outline'
+import {ToastContainer} from 'react-toastify';
+import {Outlet} from "react-router-dom";
+import {useSelector} from 'react-redux'
+import {selectToken} from '../features/auth/authSlice'
 import 'react-toastify/dist/ReactToastify.css';
 
 function classNames(...classes: string[]) {

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {get} from '../../authenticated-fetch'
-import { TwoFactorOption } from '../../types';
+import {TwoFactorOption} from '../../types';
 
 type Properties = {
   goToAdd: () => void,
