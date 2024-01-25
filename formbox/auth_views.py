@@ -26,11 +26,38 @@ def get_tokens_for_user(user):
     }
 
 
+def get_pre_mfa_login(user):
+    if TwoFactorOption.objects.filter(user=user).exists():
+        user.authsetting.two_factor_auth_token = str(uuid4())
+        user.authsetting.two_factor_auth_token_created = timezone.now()
+        user.save()
+        return {"state": AuthenticationState.MFA_NEEDED, "twoFactorAuthToken": user.authsetting.two_factor_auth_token}
+    elif user.authsetting.needs_password_change:
+        user.authsetting.password_reset_token = str(uuid4())
+        user.authsetting.password_reset_token_created = timezone.now()
+        user.save()
+        return {"state": AuthenticationState.PASSWORD_CHANGE_REQUIRED, "passwordResetToken": user.authsetting.password_reset_token}
+    else:
+        tokens = get_tokens_for_user(user)
+        return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
+
+
+def get_post_mfa_login(user):
+    if user.authsetting.needs_password_change:
+        user.authsetting.password_reset_token = str(uuid4())
+        user.authsetting.password_reset_token_created = timezone.now()
+        user.save()
+        return {"state": AuthenticationState.PASSWORD_CHANGE_REQUIRED, "passwordResetToken": user.authsetting.password_reset_token}
+    else:
+        tokens = get_tokens_for_user(user)
+        return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
+
 @never_cache
 @router.post("/request-password-change", response=ChangePasswordResponse)
 def request_password_change(request, data: ChangePasswordRequest):
     try:
         user = User.objects.filter(email=data.email).get()
+        user.authsetting.needs_password_change = True
         user.authsetting.password_reset_token = str(uuid4())
         user.authsetting.password_reset_token_created = timezone.now()
         user.save()
@@ -45,19 +72,7 @@ def request_password_change(request, data: ChangePasswordRequest):
 def login(request, data: LoginRequest):
     user = authenticate(username=data.username, password=data.password)
     if user:
-        if TwoFactorOption.objects.filter(user=user).exists():
-            user.authsetting.two_factor_auth_token = str(uuid4())
-            user.authsetting.two_factor_auth_token_created = timezone.now()
-            user.save()
-            return {"state": AuthenticationState.MFA_NEEDED, "twoFactorAuthToken": user.authsetting.two_factor_auth_token}
-        elif user.authsetting.needs_password_change:
-            user.authsetting.password_reset_token = str(uuid4())
-            user.authsetting.password_reset_token_created = timezone.now()
-            user.save()
-            return {"state": AuthenticationState.PASSWORD_CHANGE_REQUIRED, "passwordResetToken": user.authsetting.password_reset_token}
-        else:
-            tokens = get_tokens_for_user(user)
-            return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
+        return get_pre_mfa_login(user)
     else:
         return {"state": AuthenticationState.FAILED}
 
@@ -101,16 +116,20 @@ def complete_mfa(request, data: CompleteMFARequest):
         user = user.get()
         option = TwoFactorOption.objects.filter(user=user, active=True, id=data.twoFactorMethod).get()
         if validate_mfa(option, data.code):
-            if user.authsetting.needs_password_change:
-                user.authsetting.password_reset_token = str(uuid4())
-                user.authsetting.password_reset_token_created = timezone.now()
-                user.save()
-                return {"state": AuthenticationState.PASSWORD_CHANGE_REQUIRED, "passwordResetToken": user.authsetting.password_reset_token}
-            else:
-                tokens = get_tokens_for_user(user)
-                return {"state": AuthenticationState.SUCCESS, "authToken": tokens['access'], "refreshToken": tokens['refresh']}
+            return get_post_mfa_login(user)
     return {"state": AuthenticationState.FAILED}
 
+
+@never_cache
+@router.post("/check-change-password", response=LoginResponse)
+def complete_change_password(request, data: StartChangePasswordRequest):
+    five_minutes_ago = timezone.now() - timedelta(minutes=5)
+    user = User.objects.filter(authsetting__password_reset_token=data.passwordResetToken, authsetting__password_reset_token_created__gte=five_minutes_ago)
+    if user.exists():
+        user = user.get()
+        return get_pre_mfa_login(user)
+    else:
+        return {"state": AuthenticationState.FAILED}
 
 @never_cache
 @router.post("/complete-change-password", response=LoginResponse)

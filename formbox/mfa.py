@@ -1,3 +1,5 @@
+import datetime
+
 import pyotp
 
 from django.contrib.auth.models import User
@@ -21,4 +23,9 @@ def validate_mfa(mfa: TwoFactorOption, code: str) -> bool:
     elif mfa.two_factor_type == TwoFactorType.SMS:
         return check_verification(mfa.target, code)
     elif mfa.two_factor_type == TwoFactorType.TOTP:
-        return pyotp.TOTP(mfa.secret).now() == code
+        now = datetime.datetime.now()
+        thirty_seconds_ago = now - datetime.timedelta(seconds=30)
+        thirty_seconds_ahead = now + datetime.timedelta(seconds=30)
+        return pyotp.TOTP(mfa.secret).at(thirty_seconds_ago) == code or \
+               pyotp.TOTP(mfa.secret).now() == code or \
+               pyotp.TOTP(mfa.secret).at(thirty_seconds_ahead) == code

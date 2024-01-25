@@ -4,9 +4,15 @@ import UsernamePassword from '../components/login/UsernamePassword'
 import ForgotPassword from '../components/login/ForgotPassword'
 import Mfa from '../components/login/MFA'
 import ChangePassword from '../components/login/ChangePassword'
+import {selectToken} from '../features/auth/authSlice'
+import {post} from '../authenticated-fetch'
+import {AuthenticationState, LoginResponse} from '../types'
+import {useSelector} from 'react-redux'
 import {useSearchParams} from 'react-router-dom';
+import {toast} from 'react-toastify';
 
 export default function Login() {
+  const token = useSelector(selectToken)
   const [searchParams, setSearchParams] = useSearchParams();
 
   const USERNAME_PASSWORD = 0;
@@ -38,11 +44,20 @@ export default function Login() {
   const [mfaCode, setMfaCode] = useState('');
   const [passwordChangeCode, setPasswordChangeCode] = useState('');
 
+  const changeCode = searchParams.get("passwordChangeCode");
   useEffect(() => {
-    const changeCode = searchParams.get("passwordChangeCode");
-    if(changeCode) {
-      setPasswordChangeCode(changeCode);
-      setForm(<ChangePassword passwordChangeCode={passwordChangeCode} goHome={goHome} />)
+    if(changeCode && page === USERNAME_PASSWORD) {
+      post<LoginResponse>('/api/auth/check-change-password', {
+        passwordResetToken: changeCode
+      }, token).then((resp) => {
+        if(resp.state === AuthenticationState.MFA_NEEDED) {
+          goToMFA(resp.twoFactorAuthToken || '');
+        } else if(resp.state === AuthenticationState.PASSWORD_CHANGE_REQUIRED) {
+          goToChangePassword(resp.passwordResetToken || '');
+        } else {
+          toast.error("Token is no longer valid");
+        }
+      });
     } else if(page === USERNAME_PASSWORD) {
       setForm(<UsernamePassword goToForgotPassword={goToForgotPassword} goToMFA={goToMFA} goToChangePassword={goToChangePassword} />)
     } else if(page === FORGOT_PASSWORD) {
@@ -54,7 +69,7 @@ export default function Login() {
     } else {
       setForm(<></>)
     }
-  }, [page, setForm, mfaCode, passwordChangeCode, searchParams, goHome])
+  }, [page, setForm, mfaCode, passwordChangeCode, searchParams, goHome, token, changeCode])
 
   return (
     <>
