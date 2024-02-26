@@ -20,12 +20,14 @@ export default function ManageForms() {
   
   const goToView = (toBeViewed: ApiForm) => {
     setFormToBeViewed(toBeViewed);
-    setEditing(true);
+    setViewing(true);
+    setEditing(false);
   }
   
   const goToEdit = (toBeEdited: ApiForm) => {
     setFormToBeEdited(toBeEdited);
     setEditing(true);
+    setViewing(false);
   }
 
   const goToDelete = (toBeDeleted: ApiForm) => {
@@ -45,7 +47,7 @@ export default function ManageForms() {
     if(adding) {
       setShown(<FormForm goToTable={goToTable} goToView={goToView} formToBeEdited={null} />)
     } else if(viewing) {
-      setShown(<FormView goToTable={goToTable} goToEdit={goToEdit} formToBeViewed={formToBeEdited} />)
+      setShown(<FormView goToTable={goToTable} goToEdit={goToEdit} formToBeViewed={formToBeViewed} />)
     } else if(editing) {
       setShown(<FormForm goToTable={goToTable} goToView={goToView} formToBeEdited={formToBeEdited} />)
     } else if (deleting) {
@@ -53,7 +55,7 @@ export default function ManageForms() {
     } else {
       setShown(<FormsTable goToAdd={goToAdd} goToView={goToView} goToEdit={goToEdit} goToDelete={goToDelete} />)
     }
-  }, [adding, editing, deleting, formToBeEdited, formToBeDeleted, setShown])
+  }, [adding, viewing, editing, deleting, formToBeViewed, formToBeEdited, formToBeDeleted, setShown])
 
   return (
     <>
