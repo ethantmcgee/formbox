@@ -1,13 +1,10 @@
 import AuthGuard from '../components/AuthGuard'
+import ManageForms from '../components/form/ManageForms'
 
-export default function Home() {
+export default function Users() {
   return (
     <AuthGuard>
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-bold underline">
-          Forms
-        </h1>
-      </div>
+      <ManageForms />
     </AuthGuard>
   );
 }

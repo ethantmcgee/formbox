@@ -39,6 +39,23 @@ export enum DeleteTwoFactorState {
   FAILED = "FAILED"
 }
 
+export enum ProtectionType {
+  NONE = "NONE",
+  HCAPTCHA = "HCAPTCHA",
+  RECAPTCHA = "RECAPTCHA"
+};
+
+export enum NotificationType {
+  NONE = "NONE",
+  IMMEDIATE = "IMMEDIATE",
+  DIGEST = "DIGEST"
+};
+
+export enum DayPart {
+  AM = "AM",
+  PM = "PM"
+};
+
 export class LoginResponse {
   state: AuthenticationState | null = null;
   passwordResetToken: string | null = null;
@@ -97,4 +114,22 @@ export class ApiUser {
 export class PageableApiUser {
   total: number | null = null;
   results: ApiUser[] = [];
+}
+
+export class ApiForm {
+  id: number | null = null;
+  name: string | null = null;
+  slug: string | null = null;
+  protection: ProtectionType | null = null;
+  protectionKey: string | null = null;
+  notification: NotificationType | null = null;
+  digestTime: number | null = null;
+  digestDayPart: DayPart | null = null;
+  domains: string | null = null;
+  notifications: string | null = null;
+}
+
+export class PageableApiForm {
+  total: number | null = null;
+  results: ApiForm[] = [];
 }
