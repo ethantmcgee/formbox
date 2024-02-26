@@ -141,7 +141,7 @@ def send_email(to, subject, body):
     s.connect(getenv("SMTP_HOST"), int(getenv("SMTP_PORT")))
     if bool(getenv("SMTP_TLS")):
         s.starttls()
-    if getenv("SMTP_USERNAME", None) != None and getenv("SMTP_PASSWORD", None) != None:
+    if getenv("SMTP_USERNAME", "") and getenv("SMTP_PASSWORD", ""):
         s.login(getenv("SMTP_USERNAME"), getenv("SMTP_PASSWORD"))
     s.sendmail(sender, to, msg.as_string())
     s.quit()

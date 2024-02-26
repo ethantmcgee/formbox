@@ -74,11 +74,16 @@ class Form(models.Model):
     digest_day_part = models.CharField(max_length=3, choices=DAY_PART, null=True)
 
 
-class ProjectNotification(models.Model):
-    project = models.ForeignKey(Form, on_delete=models.CASCADE)
+class FormDomain(models.Model):
+    form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    domain = models.CharField(max_length=255)
+
+
+class FormNotification(models.Model):
+    form = models.ForeignKey(Form, on_delete=models.CASCADE)
     email = models.CharField(max_length=255)
 
 
-class ProjectSubmission(models.Model):
-    project = models.ForeignKey(Form, on_delete=models.CASCADE)
+class FormSubmission(models.Model):
+    form = models.ForeignKey(Form, on_delete=models.CASCADE)
     submission = models.JSONField()

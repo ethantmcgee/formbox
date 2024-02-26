@@ -33,18 +33,18 @@ export default function UserForm({ goToTable, userToBeEdited }: Properties) {
     get(`/api/users/${userToBeEdited?.id || 0}/force-password-reset`, token).then(() => {
       toast.success("User will be required to change password on next login");
     });
-    }, [token, userToBeEdited?.id]);
+  }, [token, userToBeEdited?.id]);
 
   const onSubmit = useCallback((data: { username: string, email: string }) => {
-    get<CheckAvailabilityResponse>(`/api/settings/check-username/${data.username}`, token).then((resp) => {
+    get<CheckAvailabilityResponse>(`/api/users/check-username/${userToBeEdited?.id || 0}/${data.username}`, token).then((resp) => {
       if(resp.available) {
-        get<CheckAvailabilityResponse>(`/api/settings/check-email/${data.email}`, token).then((resp) => {
+        get<CheckAvailabilityResponse>(`/api/users/check-email/${userToBeEdited?.id || 0}/${data.email}`, token).then((resp) => {
           if(resp.available) {
             if(userToBeEdited) {
               userToBeEdited.username = data.username;
               userToBeEdited.email = data.email;
               put('/api/users/', userToBeEdited, token).then(() => {
-                toast.success("User Created");
+                toast.success("User Updated");
                 goToTable();
               });
             } else {
@@ -52,7 +52,7 @@ export default function UserForm({ goToTable, userToBeEdited }: Properties) {
                 username: data.username,
                 email: data.email
               }, token).then(() => {
-                toast.success("User Updated");
+                toast.success("User Created");
                 goToTable();
               });
             }
@@ -64,7 +64,7 @@ export default function UserForm({ goToTable, userToBeEdited }: Properties) {
         toast.error("This username is not available");
       }
     });
-    }, [goToTable, token, userToBeEdited]);
+  }, [goToTable, token, userToBeEdited]);
 
   return (
     <>

@@ -9,6 +9,7 @@ from uuid import uuid4
 from os import getenv
 
 from formbox.mail import send_email
+from formbox.settings_api import CheckAvailabilityResponse
 from formbox.user_api import ApiUser, PageableApiUser
 
 router = Router()
@@ -71,3 +72,17 @@ def update_user(request, data: ApiUser):
 def update_user(request, data: ApiUser):
     User.objects.get(id=data.id).delete()
     return True
+
+
+@never_cache
+@router.get("/check-username/{id}/{username}", response=CheckAvailabilityResponse, auth=JWTAuth())
+def check_username(request, id: int, username: str):
+    count = User.objects.exclude(id=id).filter(username=username).count()
+    return {"available": count == 0}
+
+
+@never_cache
+@router.get("/check-email/{id}/{email}", response=CheckAvailabilityResponse, auth=JWTAuth())
+def check_email(request, id: int, email: str):
+    count = User.objects.exclude(id=id).filter(email=email).count()
+    return {"available": count == 0}
