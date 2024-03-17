@@ -11,7 +11,7 @@
 
 > Note: The project has not yet reached version 1.0.0 and is currently 
 > in alpha stage at best.  Progress is on-going, v1.0.0 is expected in
-> mid-March 2024.
+> mid-April 2024.
 
 ## Overview
 
