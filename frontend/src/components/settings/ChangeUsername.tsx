@@ -5,7 +5,8 @@ import {useEffect, useCallback} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {get, post} from '../../authenticated-fetch'
-import {GetUserResponse, CheckAvailabilityResponse, ChangeUsernameResponse, ChangeUsernameState} from '../../types'
+import {GetUserResponse, CheckAvailabilityResponse, ChangeUsernameResponse} from '../../dto'
+import {ChangeUsernameState} from '../../enum'
 import {toast} from 'react-toastify';
 
 const schema = yup.object({
@@ -25,7 +26,7 @@ export default function ChangeUsername() {
         post<ChangeUsernameResponse>('/api/settings/username-change', {
           newUsername: data.username
         }, token).then((resp) => {
-          if(resp.state === ChangeUsernameState.SUCCESS) {
+          if(resp.state === ChangeUsernameState.CHANGE_USERNAME_SUCCESS) {
             toast.success("Username changed")
           } else {
             toast.error(resp.state);

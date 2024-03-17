@@ -5,8 +5,9 @@ import {useEffect, useCallback} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {get, post} from '../../authenticated-fetch'
-import {GetUserResponse, CheckAvailabilityResponse, ChangeEmailResponse, ChangeEmailState} from '../../types'
-import {toast} from 'react-toastify';
+import {GetUserResponse, CheckAvailabilityResponse, ChangeEmailResponse} from '../../dto'
+import {ChangeEmailState} from '../../enum'
+import {toast} from 'react-toastify'
 
 const schema = yup.object({
   email: yup.string().email().required()
@@ -25,7 +26,7 @@ export default function ChangeEmail() {
         post<ChangeEmailResponse>('/api/settings/email-change', {
           newEmail: data.email
         }, token).then((resp) => {
-          if(resp.state === ChangeEmailState.SUCCESS) {
+          if(resp.state === ChangeEmailState.CHANGE_EMAIL_SUCCESS) {
             toast.success("Email changed")
           } else {
             toast.error(resp.state);

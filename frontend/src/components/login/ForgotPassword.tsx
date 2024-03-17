@@ -5,7 +5,8 @@ import * as yup from "yup";
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {post} from '../../authenticated-fetch'
-import {AuthenticationState, LoginResponse} from '../../types'
+import {LoginResponse} from '../../dto'
+import {AuthenticationState} from '../../enum'
 import {toast} from 'react-toastify';
 
 type Properties = {
@@ -27,7 +28,7 @@ export default function ForgotPassword({ goHome }: Properties) {
     post<LoginResponse>('/api/auth/request-password-change', {
       email: data.email
     }, token).then((data) => {
-      if(data.state === AuthenticationState.SUCCESS) {
+      if(data.state === AuthenticationState.AUTH_STATE_SUCCESS) {
         toast.success("If an account with this email exists, you'll get an email.")
         goHome()
       } else {

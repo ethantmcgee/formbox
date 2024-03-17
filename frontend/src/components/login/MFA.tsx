@@ -4,7 +4,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate} from 'react-router'
 import {selectToken, setAuthToken, setRefreshToken} from '../../features/auth/authSlice'
 import {post} from '../../authenticated-fetch'
-import {AuthenticationState, LoginResponse, MFAOption} from '../../types'
+import {LoginResponse, MFAOption} from '../../dto'
+import {AuthenticationState, TwoFactorType} from '../../enum'
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -43,11 +44,11 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
       twoFactorMethod: data.method,
       code: data.code
     }, token).then((resp) => {
-      if(resp.state === AuthenticationState.SUCCESS) {
+      if(resp.state === AuthenticationState.AUTH_STATE_SUCCESS) {
         dispatch(setAuthToken(resp.authToken))
         dispatch(setRefreshToken(resp.refreshToken))
         navigate("/")
-      } else if(resp.state === AuthenticationState.PASSWORD_CHANGE_REQUIRED) {
+      } else if(resp.state === AuthenticationState.AUTH_STATE_PASSWORD_CHANGE_REQUIRED) {
         goToChangePassword(resp.passwordResetToken || '');
       } else {
         toast.error(resp.state);
@@ -60,7 +61,7 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
       twoFactorAuthToken: mfaCode,
       twoFactorMethod: getValues("method")
     }, token).then((data) => {
-      if(data.state === AuthenticationState.SUCCESS) {
+      if(data.state === AuthenticationState.AUTH_STATE_SUCCESS) {
         toast.success("Code Sent");
       } else {
         toast.error(data.state);
@@ -77,7 +78,7 @@ export default function Mfa({ mfaCode, goHome, goToChangePassword }: Properties)
   }, [mfaCode, token]);
   
   const selected = getSelectedOption(watch("method"));
-  const showSendCode = selected?.type === 'EMAIL' || selected?.type === 'SMS' ? (
+  const showSendCode = selected?.type === TwoFactorType.TWO_FACTOR_EMAIL || selected?.type === TwoFactorType.TWO_FACTOR_SMS ? (
     <div className="mt-6 flex items-center justify-end gap-x-6">
       <button type="button" className="text-sm font-semibold leading-6 text-gray-900" onClick={() => sendCode()}>
         Send Code

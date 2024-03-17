@@ -5,7 +5,8 @@ import {useCallback} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {post} from '../../authenticated-fetch'
-import {ChangePasswordResponse, ChangePasswordState} from '../../types'
+import {ChangePasswordResponse} from '../../dto'
+import {ChangePasswordState} from '../../enum'
 import {toast} from 'react-toastify';
 
 const schema = yup.object({
@@ -32,7 +33,7 @@ export default function ChangePassword() {
       currentPassword: data.currentPassword,
       newPassword: data.newPassword
     }, token).then((resp) => {
-      if(resp.state === ChangePasswordState.SUCCESS) {
+      if(resp.state === ChangePasswordState.CHANGE_PASSWORD_SUCCESS) {
         toast.success("Password changed")
       } else {
         toast.error(resp.state);

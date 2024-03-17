@@ -4,7 +4,7 @@ import {yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
-import {CheckAvailabilityResponse, ApiForm} from '../../types';
+import {CheckAvailabilityResponse, ApiForm} from '../../dto';
 import {get, put, post} from '../../authenticated-fetch'
 import {toast} from 'react-toastify';
 

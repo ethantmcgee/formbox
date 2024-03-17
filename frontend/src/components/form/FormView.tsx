@@ -1,4 +1,4 @@
-import {ApiForm} from '../../types';
+import {ApiForm} from '../../dto';
 
 type Properties = {
   goToTable: () => void,

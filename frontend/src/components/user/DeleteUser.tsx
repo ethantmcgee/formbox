@@ -2,7 +2,7 @@ import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {del} from '../../authenticated-fetch'
 import {toast} from 'react-toastify';
-import {ApiUser} from '../../types';
+import {ApiUser} from '../../dto';
 
 type Properties = {
   goToTable: () => void,

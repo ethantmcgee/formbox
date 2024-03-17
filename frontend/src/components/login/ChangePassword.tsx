@@ -5,7 +5,8 @@ import {useCallback} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {post} from '../../authenticated-fetch'
-import {AuthenticationState, LoginResponse} from '../../types'
+import {LoginResponse} from '../../dto'
+import {AuthenticationState} from '../../enum'
 import {toast} from 'react-toastify';
 
 type Properties = {
@@ -36,7 +37,7 @@ export default function ChangePassword({ passwordChangeCode, goHome }: Propertie
       passwordResetToken: passwordChangeCode,
       newPassword: data.newPassword
     }, token).then((data) => {
-      if(data.state === AuthenticationState.SUCCESS) {
+      if(data.state === AuthenticationState.AUTH_STATE_SUCCESS) {
         toast.success("Password changed successfully.  Please login")
         goHome()
       } else {

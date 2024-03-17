@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {get} from '../../authenticated-fetch'
-import {PageableApiForm, ApiForm} from '../../types';
+import {PageableApiForm, ApiForm} from '../../dto';
 
 type Properties = {
   goToAdd: () => void,

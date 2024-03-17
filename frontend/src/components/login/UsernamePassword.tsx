@@ -4,7 +4,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import {useNavigate} from 'react-router'
 import {selectToken, setAuthToken, setRefreshToken} from '../../features/auth/authSlice'
 import {post} from '../../authenticated-fetch'
-import {AuthenticationState, LoginResponse} from '../../types'
+import {LoginResponse} from '../../dto'
+import {AuthenticationState} from '../../enum'
 import {useForm} from "react-hook-form";
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
@@ -34,13 +35,13 @@ export default function UsernamePassword({ goToForgotPassword, goToMFA, goToChan
       username: data.username,
       password: data.password
     }, token).then((resp) => {
-      if(resp.state === AuthenticationState.SUCCESS) {
+      if(resp.state === AuthenticationState.AUTH_STATE_SUCCESS) {
         dispatch(setAuthToken(resp.authToken))
         dispatch(setRefreshToken(resp.refreshToken))
         navigate("/")
-      } else if(resp.state === AuthenticationState.MFA_NEEDED) {
+      } else if(resp.state === AuthenticationState.AUTH_STATE_MFA_NEEDED) {
         goToMFA(resp.twoFactorAuthToken || '');
-      } else if(resp.state === AuthenticationState.PASSWORD_CHANGE_REQUIRED) {
+      } else if(resp.state === AuthenticationState.AUTH_STATE_PASSWORD_CHANGE_REQUIRED) {
         goToChangePassword(resp.passwordResetToken || '');
       } else {
         toast.error("Login failed. Please try again");

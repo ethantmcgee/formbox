@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {TwoFactorOption} from '../../types';
+import {TwoFactorOption} from '../../dto';
 import MFAForm from './MFAForm';
 import MFATable from './MFATable';
 import DeleteMFA from './DeleteMFA';

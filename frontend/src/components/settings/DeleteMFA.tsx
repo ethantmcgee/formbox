@@ -1,4 +1,5 @@
-import {DeleteTwoFactorResponse, DeleteTwoFactorState, TwoFactorOption} from '../../types';
+import {DeleteTwoFactorResponse, TwoFactorOption} from '../../dto';
+import {DeleteTwoFactorState} from '../../enum'
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {del} from '../../authenticated-fetch'
@@ -14,7 +15,7 @@ export default function DeleteMFA({ goToTable, mfaToBeDeleted }: Properties) {
 
   const doDelete = () => {
     del<DeleteTwoFactorResponse>('/api/settings/mfa', {id: mfaToBeDeleted?.id}, token).then((data) => {
-      if(data.state === DeleteTwoFactorState.SUCCESS) {
+      if(data.state === DeleteTwoFactorState.DELETE_TWO_FACTOR_SUCCESS) {
         toast.success("MFA Option Deleted")
         goToTable()
       } else {

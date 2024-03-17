@@ -4,7 +4,8 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
-import {TwoFactorOption, TwoFactorSaveState} from '../../types';
+import {TwoFactorOption} from '../../dto';
+import {TwoFactorSaveState} from '../../enum'
 import {put} from '../../authenticated-fetch'
 import QRCode from "react-qr-code";
 import {toast} from 'react-toastify';
@@ -50,7 +51,7 @@ export default function MFAForm({ goToTable }: Properties) {
       twoFactorType: getValues("twoFactorType"),
       active: false
     }, token).then((data) => {
-      if(data.state === TwoFactorSaveState.SUCCESS) {
+      if(data.state === TwoFactorSaveState.TWO_FACTOR_SAVE_SUCCESS) {
         toast.success("Sent Code");
       } else {
         toast.error(data.state);
@@ -68,7 +69,7 @@ export default function MFAForm({ goToTable }: Properties) {
       code: data.code,
       active: true
     }, token).then((data) => {
-      if(data.state === TwoFactorSaveState.SUCCESS) {
+      if(data.state === TwoFactorSaveState.TWO_FACTOR_SAVE_SUCCESS) {
         toast.success("Successfully Saved");
         goToTable()
       } else {

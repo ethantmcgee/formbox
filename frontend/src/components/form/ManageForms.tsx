@@ -1,65 +1,61 @@
-import {useState, useEffect} from 'react';
-import {ApiForm} from '../../types';
+import {ApiForm} from '../../dto';
 import FormView from './FormView';
 import FormForm from './FormForm';
 import FormsTable from './FormsTable';
 import DeleteForm from './DeleteForm';
+import Manager from '../base/Manager';
 
 export default function ManageForms() {
-  const [adding, setAdding] = useState(false)
-  const [viewing, setViewing] = useState(false)
-  const [editing, setEditing] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const [formToBeViewed, setFormToBeViewed] = useState({} as ApiForm)
-  const [formToBeEdited, setFormToBeEdited] = useState({} as ApiForm)
-  const [formToBeDeleted, setFormToBeDeleted] = useState({} as ApiForm)
-
-  const goToAdd = () => {
-    setAdding(true);
-  }
-  
-  const goToView = (toBeViewed: ApiForm) => {
-    setFormToBeViewed(toBeViewed);
-    setViewing(true);
-    setEditing(false);
-  }
-  
-  const goToEdit = (toBeEdited: ApiForm) => {
-    setFormToBeEdited(toBeEdited);
-    setEditing(true);
-    setViewing(false);
+  const getListing = (
+    goToAdd: () => void,
+    goToView: (arg0: ApiForm) => void,
+    goToEdit: (arg0: ApiForm) => void,
+    goToDelete: (arg0: ApiForm) => void
+  ) => {
+    return (
+      <FormsTable goToAdd={goToAdd} goToView={goToView} goToEdit={goToEdit} goToDelete={goToDelete} />
+    )
   }
 
-  const goToDelete = (toBeDeleted: ApiForm) => {
-    setFormToBeDeleted(toBeDeleted);
-    setDeleting(true);
+  const getAdd = (
+    goToTable: () => void,
+    goToView: (arg0: ApiForm) => void
+  ) => {
+    return (
+      <FormForm goToTable={goToTable} goToView={goToView} formToBeEdited={null} />
+    )
   }
 
-  const goToTable = () => {
-    setAdding(false);
-    setEditing(false);
-    setDeleting(false);
+  const getView = (
+    entity: ApiForm,
+    goToTable: () => void,
+    goToEdit: (arg0: ApiForm) => void
+  ) => {
+    return (
+      <FormView goToTable={goToTable} goToEdit={goToEdit} formToBeViewed={entity} />
+    )
   }
 
-  const [shown, setShown] = useState(<FormsTable goToAdd={goToAdd} goToView={goToView} goToEdit={goToEdit} goToDelete={goToDelete} />)
+  const getEdit = (
+    entity: ApiForm,
+    goToTable: () => void,
+    goToView: (arg0: ApiForm) => void
+  ) => {
+    return (
+      <FormForm goToTable={goToTable} goToView={goToView} formToBeEdited={entity} />
+    )
+  }
 
-  useEffect(() => {
-    if(adding) {
-      setShown(<FormForm goToTable={goToTable} goToView={goToView} formToBeEdited={null} />)
-    } else if(viewing) {
-      setShown(<FormView goToTable={goToTable} goToEdit={goToEdit} formToBeViewed={formToBeViewed} />)
-    } else if(editing) {
-      setShown(<FormForm goToTable={goToTable} goToView={goToView} formToBeEdited={formToBeEdited} />)
-    } else if (deleting) {
-      setShown(<DeleteForm goToTable={goToTable} formToBeDeleted={formToBeDeleted} />)
-    } else {
-      setShown(<FormsTable goToAdd={goToAdd} goToView={goToView} goToEdit={goToEdit} goToDelete={goToDelete} />)
-    }
-  }, [adding, viewing, editing, deleting, formToBeViewed, formToBeEdited, formToBeDeleted, setShown])
+  const getDelete = (
+    entity: ApiForm,
+    goToTable: () => void
+  ) => {
+    return (
+      <DeleteForm goToTable={goToTable} formToBeDeleted={entity} />
+    )
+  }
 
   return (
-    <>
-      {shown}
-    </>
+    <Manager getListing={getListing} getAdd={getAdd} getView={getView} getEdit={getEdit} getDelete={getDelete}/>
   )
 }
