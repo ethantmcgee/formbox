@@ -1,53 +1,50 @@
-import {useState, useEffect} from 'react';
 import {ApiUser} from '../../dto';
 import UserForm from './UserForm';
 import UsersTable from './UsersTable';
 import DeleteUser from './DeleteUser';
+import Manager from '../base/Manager';
 
-export default function ManageUsers() {
-  const [adding, setAdding] = useState(false)
-  const [editing, setEditing] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const [userToBeEdited, setUserToBeEdited] = useState({} as ApiUser)
-  const [userToBeDeleted, setUserToBeDeleted] = useState({} as ApiUser)
-
-  const goToAdd = () => {
-    setAdding(true);
-  }
-  
-  const goToEdit = (toBeEdited: ApiUser) => {
-    setUserToBeEdited(toBeEdited);
-    setEditing(true);
+export default function ManageForms() {
+  const getListing = (
+    goToAdd: () => void,
+    goToView: (arg0: ApiUser) => void,
+    goToEdit: (arg0: ApiUser) => void,
+    goToDelete: (arg0: ApiUser) => void
+  ) => {
+    return (
+      <UsersTable goToAdd={goToAdd} goToEdit={goToEdit} goToDelete={goToDelete} />
+    )
   }
 
-  const goToDelete = (toBeDeleted: ApiUser) => {
-    setUserToBeDeleted(toBeDeleted);
-    setDeleting(true);
+  const getAdd = (
+    goToTable: () => void,
+    goToView: (arg0: ApiUser) => void
+  ) => {
+    return (
+      <UserForm goToTable={goToTable} userToBeEdited={null} />
+    )
   }
 
-  const goToTable = () => {
-    setAdding(false);
-    setEditing(false);
-    setDeleting(false);
+  const getEdit = (
+    entity: ApiUser,
+    goToTable: () => void,
+    goToView: (arg0: ApiUser) => void
+  ) => {
+    return (
+      <UserForm goToTable={goToTable} userToBeEdited={entity} />
+    )
   }
 
-  const [shown, setShown] = useState(<UsersTable goToAdd={goToAdd} goToEdit={goToEdit} goToDelete={goToDelete} />)
-
-  useEffect(() => {
-    if(adding) {
-      setShown(<UserForm goToTable={goToTable} userToBeEdited={null} />)
-    } else if(editing) {
-      setShown(<UserForm goToTable={goToTable} userToBeEdited={userToBeEdited} />)
-    } else if (deleting) {
-      setShown(<DeleteUser goToTable={goToTable} userToBeDeleted={userToBeDeleted} />)
-    } else {
-      setShown(<UsersTable goToAdd={goToAdd} goToEdit={goToEdit} goToDelete={goToDelete} />)
-    }
-  }, [adding, editing, deleting, userToBeEdited, userToBeDeleted, setShown])
+  const getDelete = (
+    entity: ApiUser,
+    goToTable: () => void
+  ) => {
+    return (
+      <DeleteUser goToTable={goToTable} userToBeDeleted={entity} />
+    )
+  }
 
   return (
-    <>
-      {shown}
-    </>
+    <Manager getListing={getListing} getAdd={getAdd} getEdit={getEdit} getDelete={getDelete}/>
   )
 }
