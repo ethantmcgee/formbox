@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react';
-import {PageableApiForm, ApiForm} from '../../dto';
 
 export type Pageable<T> = {
   results: T[]
@@ -39,7 +38,7 @@ export default function FormsTable<T>({ entityType, description, perPage, goToAd
       setData(data.results)
       setTotal(data.total)
     })
-  }, [page, itemsPerPage, search])
+  }, [doSearch, page, itemsPerPage, search])
   
   return (
     <>

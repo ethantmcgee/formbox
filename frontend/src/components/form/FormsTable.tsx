@@ -1,4 +1,3 @@
-import {useState} from 'react';
 import {useSelector} from 'react-redux'
 import {selectToken} from '../../features/auth/authSlice'
 import {get} from '../../authenticated-fetch'
@@ -15,11 +14,6 @@ type Properties = {
 
 export default function FormsTable({ goToAdd, goToView, goToEdit, goToDelete }: Properties) {
   const token = useSelector(selectToken)
-  const [forms, setForms] = useState([] as ApiForm[]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [itemsPerPage, ] = useState(10);
-  const [search, setSearch] = useState('');
   
   const doSearch = (search: string, page: number, itemsPerPage: number) => {
     return new Promise<Pageable<ApiForm>>((resolve, reject) => {
